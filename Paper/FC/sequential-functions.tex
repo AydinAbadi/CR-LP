@@ -1,0 +1,24 @@
+% !TEX root =S-PoR.tex
+
+
+
+
+In general, time-lock puzzles by definition are sequential functions.  In their construction, it is required a  function inherently sequential, e.g. modular squaring, is called iteratively for a certain number of times.  The notions of sequential function and iterated sequential functions, in the presence of an adversary possessing a polynomial number of processors, have been generalised and defined in \cite{BonehBBF18}. Below, for the sake of completeness, we provide those  definitions. 
+
+
+\begin{definition}[$\Delta,\delta(\Delta))$-Sequential function]
+For a function: $\delta(\Delta)$, time parameter: $\Delta$ and security parameter: $\lambda=O(\log(|X|))$,  $f:X\rightarrow Y$ is a $(\Delta,\delta(\Delta))$-sequential function if the following conditions hold:
+\begin{itemize}
+\item[$\bullet$] There exists an algorithm that for all $x\in X$evaluates $f$ in parallel time $\Delta$ using $poly(\log(\Delta),\lambda)$ processors.
+\item[$\bullet$] For all adversaries $\mathcal{A}$ that run in parallel time strictly less than $\delta(\Delta)$ with $poly(\Delta,\lambda)$ processors: 
+$$Pr\left[y_{\scriptscriptstyle A}=f(x)\middle |  y_{\scriptscriptstyle A}\stackrel{\scriptscriptstyle \$}\leftarrow \mathcal {A}(\lambda,x), x\stackrel{\scriptscriptstyle \$}\leftarrow X\right]\leq negl(\lambda)$$
+where $\delta(\Delta)=(1-\epsilon)\Delta$ and $\epsilon<1$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Iterated Sequential function] Let $g:X\rightarrow X$ be a $(\Delta,\delta(\Delta))$-sequential function. A function $f: \mathbb{N}\times X\rightarrow X$ defined as $f(k,x)=g^{\scriptscriptstyle (k)}(x)=\underbrace{g\circ g\circ... \circ g}_{\scriptscriptstyle k\times}$ is  an iterated sequential function, with round function $g$, if for all $k=2^{\scriptscriptstyle o(\lambda)}$ the function $h:X\rightarrow X$ defined by  $h(x)=f(k,x)$ is $(k\Delta,\delta(\Delta))$-sequential. 
+
+\end{definition}
+
+%\underbrace{}_{\scriptscriptstyle \xi+1}
+The main property of an iterated sequential function is that iteration of the round function $g$, is the fastest way to evaluate the function. Iterated squaring  in a finite group of unknown order, is widely believed to be a candidate for an iterated sequential function. Its definition is  as follows. 

@@ -1,0 +1,101 @@
+% !TEX root =main.tex
+
+
+
+  \begin{figure}
+
+%\centering
+
+%\small{
+
+\begin{boxedminipage}{\columnwidth}
+
+\vspace{-2mm}
+\
+
+\begin{enumerate}
+
+\item\textbf{Setup}: $\mathtt{Setup}(1^{\scriptscriptstyle\lambda}, \Delta,z)$.  
+\begin{enumerate}
+
+\item\label{call-RTLP-Setup} Call:  $\mathtt{TLP.Setup}(1^{\scriptscriptstyle\lambda}, \Delta)\rightarrow (\hat{pk},\hat{sk})$, s.t.  $\hat{pk}=(N,T,r_{\scriptscriptstyle 1})$ and $\hat{sk}=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},a,k_{\scriptscriptstyle 1})$
+
+\item Pick  $z-1$ fixed size  random generators: $\vv{\bm{r}}=[r_{\scriptscriptstyle 2},...,r_{\scriptscriptstyle z}]$ from $\mathbb{Z}^{\scriptscriptstyle *}_{ \scriptscriptstyle N}$
+
+
+\item Pick  $z-1$ random keys: $[k_{\scriptscriptstyle 2},...,k_{\scriptscriptstyle z}]$ for a symmetric key encryption. Let $\vv{\bm{k}}=[k_{\scriptscriptstyle 1},...,k_{\scriptscriptstyle z}]$, where $k_{\scriptscriptstyle 1}\in \hat{sk}$. Also, pick $z$ fixed size sufficiently large random values: $\vv{\bm{d}}=[d_{\scriptscriptstyle 1},...,d_{\scriptscriptstyle z}]$, e.g. $|d_{\scriptscriptstyle j}|=128$-bit or $1024$-bit depending on the choice of a commitment scheme.  
+
+\item Set $pk=( \text{aux},N,T, r_{\scriptscriptstyle 1})$ as  public key. Set $sk=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},a, \vv{\bm{k}},\vv{\bm{r}},\vv{\bm{d}})$ as secret key. Note, $\text{aux}$ contains a cryptographic hash function's description and the size of the random values. Also,  note that  all generators, except $r_{\scriptscriptstyle 1}$ are kept secret. Output $pk$ and $sk$
+
+\end{enumerate}
+\item\label{Generate-Puzzle}\textbf{Generate Puzzle}: $\mathtt{GenPuz}(\vv{\bm{m}}, pk,sk)$ 
+
+
+Encrypt the  messages, starting with $j=z$, in descending order. $\forall j, z\geq j \geq 1:$
+\begin{enumerate}
+\item\label{set-pk-in-loop} Set $pk_{\scriptscriptstyle j}=(N,T,r_{\scriptscriptstyle j})$ and $sk_{\scriptscriptstyle j}=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},a,k_{\scriptscriptstyle j})$. Note, if $j=1$ then $r_{\scriptscriptstyle j} \in pk$; otherwise (when $j>1$), $r_{\scriptscriptstyle j} \in \vv{\bm{r}}$
+
+
+\item\label{call-RTLP-GenPuz} Generate a puzzle (or ciphertext pair): 
+\begin{itemize}
+\item[$\bullet$]  if $j=z$, then run: $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j},pk_{\scriptscriptstyle j},sk_{\scriptscriptstyle j})\rightarrow \ddot{o}_{\scriptscriptstyle j}$
+ 
+\item[$\bullet$]  otherwise, run: $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}||r_{\scriptscriptstyle j+1},pk_{\scriptscriptstyle j},sk_{\scriptscriptstyle j})\rightarrow \ddot{o}_{\scriptscriptstyle j}$
+\end{itemize}
+%Recall that, in TLP,  $\ddot{o}_{\scriptscriptstyle j}=(o_{\scriptscriptstyle j,1},o_{\scriptscriptstyle j,2})$
+
+
+\item\label{commit-} Commit to each message, e.g. $\mathtt{H}(m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j})=h_{\scriptscriptstyle j}$ and output:  $h_{\scriptscriptstyle j}$ 
+ 
+\item Output: $\ddot{o}_{\scriptscriptstyle j}=(o_{\scriptscriptstyle j,1},o_{\scriptscriptstyle j,2})$ as puzzle (or ciphertext pair). 
+
+\end{enumerate}
+By the end of this phase,  vectors of puzzles: $\vv{\bm{o}}=[\ddot{o}_{\scriptscriptstyle 1},..., \ddot{o}_{\scriptscriptstyle z}]$ and commitments: $\vv{\bm{h}}=[h_{\scriptscriptstyle 1},...h_{\scriptscriptstyle z}]$ are generated. All public parameters and puzzles are given to a server at time $t_{\scriptscriptstyle 0}<t_{\scriptscriptstyle1}$, where  $\Delta=f_{\scriptscriptstyle 1}-f_{\scriptscriptstyle 0}$ %The public parameters and $\vv{\bm{h}}$ are given to public verifiers.
+
+
+
+
+\item\textbf{Solve Puzzle}:  $\mathtt{SolvPuz}(pk, \vv{\bm{o}})$ 
+
+ Decrypt the messages, starting with $j=1$, in ascending order.  $\forall j, 1\leq j\leq z:$
+ 
+\begin{enumerate}
+\item If $j=1$, then set $r_{\scriptscriptstyle j}=r_{\scriptscriptstyle 1}$, where $r_{\scriptscriptstyle 1}\in pk$; Otherwise, set $r_{\scriptscriptstyle j}=u$
+
+\item Set  $pk_{\scriptscriptstyle j}=(N,T,r_{\scriptscriptstyle j})$
+
+\item\label{call-RTLP-SolvPuz} Run: $\mathtt{TLP.SolvPuz}(pk_{\scriptscriptstyle j},\ddot{o}_{\scriptscriptstyle j})\rightarrow x_{\scriptscriptstyle j}$, where $\ddot{o}_{\scriptscriptstyle j}\in \vv{\bm{o}}$
+
+
+\item\label{Dec-message} Parse $x_{\scriptscriptstyle j}$. Note that if $j<z$ then $x_{\scriptscriptstyle j}=m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}||r_{\scriptscriptstyle j+1}$; otherwise,  we have $x_{\scriptscriptstyle j}=m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}$. Therefore, $x_{\scriptscriptstyle j}$ is parsed as follows.
+
+\begin{itemize}
+\item[$\bullet$] if $j<z: $
+\begin{enumerate}
+
+\item Parse $m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}||r_{\scriptscriptstyle j+1}$ into  $m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}$ and $u=r_{\scriptscriptstyle j+1}$
+\item Output $s_{\scriptscriptstyle j}=m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}$
+\end{enumerate}
+\item[$\bullet$] otherwise (when $j=z$),  output $s_{\scriptscriptstyle j}=x_{\scriptscriptstyle j}=m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}$
+
+
+\end{itemize}
+
+\end{enumerate}
+
+\item\label{prove-} \textbf{Prove}:  $\mathtt{Prove}(pk, s_{\scriptscriptstyle j})$. Parse  $s_{\scriptscriptstyle j}$ into $\ddot{p}_{\scriptscriptstyle j}: (m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$, and send the pair to the verifier. 
+\item\label{verify-} \textbf{Verify}: $\mathtt{Verify}(pk,\ddot{p}_{\scriptscriptstyle j}, h_{\scriptscriptstyle j})$. Verifies the commitment,  $\mathtt{H}(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})\stackrel{\scriptscriptstyle?}=h_{\scriptscriptstyle j}$. If passed, accept the solution and output $1$; otherwise,  reject it and output $0$.
+
+
+
+\end{enumerate}
+\vspace{-4mm}
+\
+
+\end{boxedminipage}
+%}
+
+\caption{Chained  Time-lock Puzzle (C-TLP) Scheme} 
+\label{fig::C-TLP}
+\end{figure}
+\input{remarks.tex}

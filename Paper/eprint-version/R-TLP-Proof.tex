@@ -1,0 +1,67 @@
+% !TEX root =main.tex
+
+
+\section {Discussion on   Time-lock Puzzle}\label{R-TLP-proof} 
+
+%Below, we provide the security definition of time lock puzzle and proof of the RSA puzzle scheme proposed in \cite{Rivest:1996:TPT:888615}. Informally, a time-lock puzzle's security requires that the puzzle solution  remain hidden from all adversaries running in parallel within the time period, $\Delta$.  
+
+
+%It is essential that no adversary can find a solution (in particular distinguishes two puzzles computed on  solutions provided by the adversary)  in  time $\delta(\Delta)<\Delta$, utilising  up to many  processors running in parallel and after a potentially large amount of pre-computation. In other words, it is critical to bound the adversary's allowed parallelism. So, such factors are explicitly incorporated  into the puzzle's definitions \cite{BonehBBF18,MalavoltaT19,garay2019}. 
+%
+%%Now we have given more power to the adversary in the case that it has polynomial number of processors running in parallel. In this case, we set an upper bound on the time after which a solution is found by this adversary: \delta(\Delta)<\Delta. This means if the adversary (who has many parallel processors) run in time shorter or equal to \delta(\Delta) it cannot find the solution. 
+%
+%
+%\begin{definition}[Time-lock Puzzle Security] A time-lock puzzle is secure if for all $\lambda$ and $\Delta$, all probabilistic polynomial time adversaries $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$ where $\mathcal{A}_{\scriptscriptstyle 1}$ runs in total time $O(poly(\Delta,\lambda))$ and $\mathcal{A}_{\scriptscriptstyle 2}$ runs in  time $\delta(\Delta)<\Delta$ using at most $\pi(\Delta)$ parallel processors, there exists a negligible function $\mu(.)$, such that: 
+%
+%$$ Pr\left[
+%  \begin{array}{l}
+%\mathcal{A}_{\scriptscriptstyle 2}(pk, \Theta,state)  \rightarrow b
+%\end{array} \middle |
+%    \begin{array}{l}
+%\mathtt{R\text{-}TLP.Setup}(1^{\scriptscriptstyle\lambda},\Delta)\rightarrow (pk,sk)\\
+%\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk, \Delta)\rightarrow (s_{\scriptscriptstyle 0},s_{\scriptscriptstyle 1},state)\\
+%b\stackrel{\scriptscriptstyle\$}\leftarrow \{0,1\}\\
+%\mathtt {GenPuz}(s_{\scriptscriptstyle b}, pk, sk)\rightarrow \Theta\\
+%\end{array}    \right]\leq \frac{1}{2}+\mu(\lambda)$$
+%
+%\end{definition}
+
+
+
+\input{sequential-functions.tex}
+
+
+
+\begin{assumption}[Iterated Squaring]\label{assumption::SequentialSquaring} Let N be a  strong RSA modulus, $r$ be a generator of $\mathbb{Z}_{\scriptscriptstyle N}$,   $\Delta$ be a time parameter, and $T=poly(\Delta,\lambda)$. For  any $\mathcal{A}$, defined above,  there is a negligible function $\mu(.)$ such that: 
+
+%$$Pr[b\leftarrow \mathcal{A}(N,g,\mathcal{T},x,y)]\leq \frac{1}{2}+\mu(\lambda)$$
+$$ Pr\left[
+  \begin{array}{l}
+\mathcal{A}(N, r,y) \rightarrow b
+\end{array} 
+\middle |
+    \begin{array}{l}
+r \stackrel{\scriptscriptstyle \$}\leftarrow \mathbb{Z}_{\scriptscriptstyle N}, b\stackrel{\scriptscriptstyle \$}\leftarrow \{0,1\}\\
+\text{if} \ \ b=0,\   y \stackrel{\scriptscriptstyle \$}\leftarrow \mathbb{Z}_{\scriptscriptstyle N} \\
+\text {otherwise}\ y=r^{\scriptscriptstyle 2^{\scriptscriptstyle T}}
+\end{array}    \right]\leq \frac{1}{2}+\mu(\lambda)$$
+
+\end{assumption}
+
+
+%\begin{equation}
+
+%\end{equation}
+
+
+
+\begin{theorem}[RSA-based TLP Security]\label{theorem::R-LTP-Sec}
+Let $N$ be a  strong RSA modulus and $\Delta$ be the period within which the solution/secret remains hidden. If the sequential squaring assumption holds,  factoring $N$ is a hard problem and the symmetric key encryption is  semantically secure, then the RSA-based TLP scheme (presented in Section \ref{Time-lock-Encryption})  is a secure time-lock puzzle.
+% in the presence of an adversary whose run-time is upper bonded by $T=poly(\lambda,\Delta)$.
+\end{theorem}
+
+
+
+\begin{proof}[Proof sketch] 
+Let  a solver be $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$, where $\mathcal{A}_{\scriptscriptstyle 1}$ runs in total time $O(poly(\Delta,\lambda))$ and $\mathcal{A}_{\scriptscriptstyle 2}$ runs in  time $\delta(\Delta)<\Delta$ using at most $\pi(\Delta)$ parallel processors. For  the solver to find  the secret significantly earlier than $\delta(\Delta)$, given the public parameters, it needs to either: (a) compute $\phi(N)$, so it can generate the blinding factor: $b$ as fast as it is done in the encryption phase, or (b) break the symmetric key encryption, or (c) extract $k$ from $o_{\scriptscriptstyle 2}$ by finding the blinding factor without performing a sufficient number of  squaring (and without knowing $\phi(N)$). However,  finding  $\phi(N)$ is as hard as factoring $N$, also as long as the encryption is secure and $k$ is sufficiently large  it cannot break the symmetric key encryption. Moreover,  the blinding factor is a uniformly random element of the ring (due to Assumption \ref{assumption::SequentialSquaring}), so it prevents the solver from finding the blinding factor without carrying out enough squaring within time significantly less than $\delta(\Delta)$. Thus, any  adversary $\mathcal{A}$ cannot find the secret without carrying out a sufficient number of squaring that would take it $\delta(\Delta)$. \hfill\(\Box\)
+\end{proof}

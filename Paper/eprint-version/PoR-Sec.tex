@@ -1,0 +1,227 @@
+% !TEX root =main.tex
+
+
+
+\section{Smarter Outsourced PoR (SO-PoR) Utilising C-TLP}
+   %\vspace{-5mm}
+ As discussed in Section \ref{Related-Work}, the existing outsourced PoR's  have serious shortcomings, e.g. having high costs, not supporting real-time detection or suffering from the lack of a fair payment mechanism. In this section, we present SO-PoR to addresses them. 
+ 
+ 
+
+
+ 
+\subsection{SO-PoR Overview} 
+
+%SO-PoR uses a unique combination of (a) homomorphic MAC-based PoR \cite{DBLP:conf/asiacrypt/ShachamW08}, (b) C-TLP, and (c) a smart contract. It uses the MAC-based PoR, due to its high efficiency. Since the MAC's are privately verifiable and secret verification keys are needed to check PoR proofs, it also uses C-TLP to efficiently make them publicly verifiable. In this case, C-TLP encapsulates the verification keys and reveals each of them to verifiers only after a certain time. This combination allows the protocol to \emph{take advantage of MAC's efficiency in the setting where public verifiability is needed}. The combination of the two primitives has applications beyond PoR. SO-PoR also utilises a smart contract who acts as a public verifier on the client's behalf to verify proofs and pay an honest server. The MAC's and CTL combination also makes it possible to use a smart contract (which does not inherently support a private state) while keeping costs very low. 
+
+
+
+
+SO-PoR uses a unique combination of (a) homomorphic MAC-based PoR \cite{DBLP:conf/asiacrypt/ShachamW08}, (b) C-TLP,  (c) a smart contract,  (d) a pre-computation technique, and (e) blockchain-based random extraction beacon \cite{DBLP:journals/iacr/AbadiCKZ19,armknecht2014outsourced}. It uses the MAC-based PoR, due to its high efficiency. Since the MAC's are privately verifiable and secret verification keys are needed to check PoR proofs, SO-PoR also uses C-TLP to efficiently make them publicly verifiable. In this case, C-TLP encapsulates the verification keys and reveals each of them to verifiers only after a certain time. SO-PoR also utilises a smart contract which acts as a public verifier on the client's behalf to verify proofs and pay an honest server. The pre-computation technique allows the client at setup to generate a constant number of \emph{disposable} homomorphic MAC's for each verification.  The combination of disposable homomorphic MAC's and C-TLP  makes it possible to (a) use a smart contract  and (b) take advantage of MAC's efficiency in the setting where public verifiability is needed. This combination has applications beyond PoR.  A blockchain-based random extraction beacon allows the server to independently  derive a set of unpredictable random values from the blockchain such that the values' correctness is publicly verifiable. 
+
+
+
+At a high-level  SO-PoR works as follows. The client encodes its file using an error-correcting code and  for each $j\text{\small{-th}}$ verification it does the following. It picks two   random keys: $(v_{\scriptscriptstyle j},l_{\scriptscriptstyle j})$ of a $\mathtt{PRF}$. It uses $v_{\scriptscriptstyle j}$ to generate $c$ random blocks' indices, i.e. challenged blocks. It utilises  $l_{\scriptscriptstyle j}$ to generate a disposable MAC on each challenged block. It also uses C-TLP to make two puzzles, one that encapsulates $v_{\scriptscriptstyle j}$, and  another that encapsulates $l_{\scriptscriptstyle j}$. It deposits enough coins to cover $z$ successful PoR verifications in a smart contract. The client sends the encoded file, tags and the puzzles to the server. When $j\text{\small{-th}}$ PoR proof is needed, the server manages to discover key $v_{\scriptscriptstyle j}$ that lets it determine which file blocks are challenges. The server also uses the beacon to extract a set of random values from the blockchain. Using the MAC's,  challenged blocks, and  beacon's outputs, the server generates a compact PoR proof. The server sends the proof to the contract. After that, it can delete the related disposable MAC's.  For the same verification, after a fixed time, it manages to find the related MAC's verification key: $l_{\scriptscriptstyle j}$. It sends the key to the server who checks the correctness of $l_{\scriptscriptstyle j}$ and  PoR proof. If the contract accepts all proofs, then it pays the server  for $j\text{\small{-th}}$ verification; otherwise, it notifies the client.  
+
+
+
+
+
+
+
+%\subsection {SO-PoR Model Overview}\label{SO-PoR-Model}
+%SO-PoR model is built upon the traditional PoR paradigm \cite{DBLP:conf/asiacrypt/ShachamW08} which   is a challenge-response  protocol where a server proves to  an honest client that its file is retrievable (see  Appendix \ref{PoR-Model} for a formal definition of \cite{DBLP:conf/asiacrypt/ShachamW08}). In  SO-PoR, however,  a client may not be available for   verification. So, it wants to  delegate  a set of verifications that it cannot carry out. Informally, in this setting, it (in addition to file retrievability)  must have three guarantees: (a) \emph{verification correctness}: every verification is performed honestly, so  the client can trust the verification's result  without redoing it, (b) \emph{real-time detection}: the client is notified in almost real-time when a  proof is rejected, and (c) \emph{fair payment}: in every verification, the server is paid only if a  proof  is accepted. In SO-PoR, three parties are involved: a client (honest), potentially malicious server  and a standard smart contract. SO-PoR also, analogous to  \cite{DBLP:conf/asiacrypt/ShachamW08},  allows a client to perform the verification itself,  when it is available. We refer readers to  Appendix \ref{SO-PoR-Model} for SO-PoR formal definition.  
+%
+%
+
+
+\input{SO-PoR-definition.tex}
+
+%SO-PoR uses a novel combination of disposable tags, pre-computation technique,  C-TLP scheme, smart contract,  pseudorandom functions and commitment scheme.  At a high-level, SO-PoR works as follows. The client generates a set of authenticator tags on the file. These tags will allow the client to verify its data availability  when it is online. Also, for every verification that the client cannot be online, it precomputes a (small) set of \emph{disposable} tags related to the file's blocks that will be challenged for that verification. However, unlike standard PoR schemes in which   a subset of file blocks are challenged by picking their indices  randomly on the fly just before the verification, in SO-PoR, the challenged blocks' indices are picked \emph{pseudorandomly} by the client in the setup phase. Then, the client for, each verification, encodes the secret key that allows regeneration of the pseudorandom indices and a secret key used for a PoR verification into two puzzles. The client stores the file, tags, and puzzles on the server. It stores  commitments of the secret values that will be used for PoR verification  in a smart contract. Also, it deposits enough coins in the smart contract, to pay the server if each proof (given by the server) is accepted. At each verification time, the server first solves a puzzle and fully recovers the key for random indices. Using the key,  corresponding tags and the file, it generates a PoR and sends it to the contract. After a certain  period, for the same verification, it manages to fully find another puzzle solution  which is the verification key. It sends the key to the contract  who first checks the correctness of the key and then verifies the PoR. If accepted, the contract  for that verification pays the cloud server  who can now delete all metadata (e.g. tags, encrypted, and decrypted values) for that verification.  
+
+
+
+%First, client breaks up its file into blocks and apply an error-correcting code on every blocks. Then, it generates a set of MAC-based tags on every  blocks. These tags will allow the client to verify its data availability when it is online. For the sake of simplicity, let us assume the client does not want to perform  $z$ consecutive verifications. For  every $j^{\scriptscriptstyle th}$ verification  ($1\leq j\leq z$)  the client determines the random indices of the blocks that will be challenged for this verification and also precomputes (small) set of MAC-based tags for those blocks. It uses time-lock encryption scheme to encrypts the random indices and secret verification values (for the tags) and stores the encrypted values on the server. It also  stores the hash of random indices and  secret verification values in a smart contract. The client also stores the indices of the blocks that will appear in the blockchain from which a set of random value will be extracted. 
+
+%\input{SO-PoR-definition.tex}
+
+\subsection{SO-PoR Protocol}\label{SO-PoR-Protocol}
+This section presents SO-PoR protocol in detail, followed by the rationale behind it.      
+
+
+
+
+
+\begin{enumerate}[leftmargin=.46cm]
+
+\item\textit{\textbf{Client-side Setup}}. 
+
+
+
+\begin{enumerate}
+%\item Signs and deploys a smart contract: $\mathcal{SC}$ to a blockchain.
+
+% where the contract contains a set of public parameters: e.g. $z$: total number of verifications,  $|F|$: file bit size, $\Delta_{\scriptscriptstyle 1}$:  maximum time period  taken by the server to generate a proof, $\Delta_{\scriptscriptstyle 2}$: time window in which a message is (sent by the server and) received by the contract. The client deposits $e\cdot z$  coins for $z$ successful  verifications. 
+
+\item  \textbf{\textit{\small {Gen. Public and Private Keys}}}:   Picks a fresh key: $\hat{k}$ and two vectors of keys: $\vv{\bm{v}}$ and $\vv{\bm{l}}$, where each vector contains $z$ fresh keys. It picks a large prime number:  $p$ whose size is determined by a security parameter, i.e. $|p|=\iota$.  Moreover, it runs $\mathtt{Setup}(.)$ in  C-TLP scheme to generate a key pair: $(pk, sk)$
+
+\item \textbf{\textit{\small {Gen. Other Public Parameters}}}:  Sets $c$ to the total number of blocks challenged in each verification. It defines  parameters: $w$ and $g$, where  $w$ is an index  of a future block: $\mathcal {B}_{\scriptscriptstyle w}$ in a blockchain that will be added to the blockchain (permanent state) at about the time  first delegated verification will  be done, and $g$ is  a security parameter referring to the number of blocks (in a row) starting from  $w$.  It  sets $z$: the total number of verifications,  $||{\bm{F}}||$: file bit size, $\Delta_{\scriptscriptstyle 1}$:  the maximum time  is taken by the server to generate a proof, $\Delta_{\scriptscriptstyle 2}$: time window in which a message is (sent by the server and) received by the contract, and $e$ amount of coins paid to the server for each successful  verification. Sets $\hat{pk}: (pk,e,g,w,p,c,z,\Delta_{\scriptscriptstyle 1},\Delta_{\scriptscriptstyle 2})$. 
+
+
+\item\textbf{\textit{\small {Sign and Deploy   Smart Contract}}}: Signs and deploys a smart contract: $\mathcal{SC}$ to a blockchain.  It stores  public parameters: $(z,||{\bm{F}}||, \Delta_{\scriptscriptstyle 1},\Delta_{\scriptscriptstyle 2},c, g,p,w)$, on the contract. It deposits $e z$ coins to the contract. Then, it asks the server to sign the contract. The server signs if it agrees on all parameters.
+
+\end{enumerate}
+\item\textit{\textbf{Client-side Store}}.
+
+
+\begin{enumerate}
+
+\item \textbf{\textit{\small {Encode File}}}: Splits an error-corrected file, e.g. under Reed-Solomon codes, into $n$ blocks; ${\bm{F}}: [F_{\scriptscriptstyle 1},...,F_{\scriptscriptstyle n}]$,  where $ F_{\scriptscriptstyle i}\in \mathbb{F}_p$
+\item\label{gen-client-server-tags}\textbf{\textit{\small {Gen. Permanent Tags}}}:  Using the key: $\hat{k}$, it computes $n$ pseudorandom values:  $r_{\scriptscriptstyle i}$ and single value: $\alpha$, as follows.  
+
+ $$\alpha=\mathtt{PRF}(\hat{k},n+1)\bmod p$$
+ $$ \forall i, 1\leq i\leq n: r_{\scriptscriptstyle i}=\mathtt{PRF}(\hat{k},i)\bmod p$$
+
+ 
+ It uses the pseudorandom values to compute tags for the file blocks. 
+ 
+ $$\forall i, 1\leq i\leq n: \sigma_{\scriptscriptstyle i}= r_{\scriptscriptstyle i}+ \alpha\cdot F_{\scriptscriptstyle  i}\bmod p$$
+ 
+  So, at the end of this step,  a set of  tags are generated, $\sigma:\{\sigma_{\scriptscriptstyle 1},..., \sigma_{\scriptscriptstyle n}\}$
+\item\label{Gen-Disposable-Tags}\textbf{\textit{\small {Gen. Disposable Tags}}}: For   $j\text{\small{-th}}$ verification  ($1\leq j\leq z$):
+\begin{enumerate}
+\item chooses the related key: $v_{\scriptscriptstyle j}\in\vv{\bm{v}}$ and computes $c$ pseudorandom indices. 
+
+$$\forall b, 1\leq b\leq c: x_{\scriptscriptstyle b,j}=\mathtt{PRF}(v_{\scriptscriptstyle j}, b)\bmod n$$
+
+\item picks the corresponding  key: $l_{\scriptscriptstyle j}\in \vv{\bm{l}}$ and computes $c$ pseudorandom values:  $r_{\scriptscriptstyle b,j}$ and single value: $\alpha_{\scriptscriptstyle j}$
+
+  $$\alpha_{\scriptscriptstyle j}=\mathtt{PRF}(l_{\scriptscriptstyle j},c+1)\bmod p$$
+  $$ \forall b, 1\leq b\leq c: r_{\scriptscriptstyle b,j}=\mathtt{PRF}(l_{\scriptscriptstyle j},b)\bmod p$$
+
+
+\item generates $c$ disposable tags.  
+
+$$\forall b, 1\leq b\leq c: \sigma_{\scriptscriptstyle b,j}=r_{\scriptscriptstyle b,j}+\alpha_{\scriptscriptstyle j}\cdot F_{\scriptscriptstyle y}\bmod p$$
+
+  where $y= x_{\scriptscriptstyle b,j}$. At the end of this step, a set $\sigma_{\scriptscriptstyle j}$ of $c$ tags are computed,  $\sigma_{\scriptscriptstyle j}:\{\sigma_{\scriptscriptstyle 1,j},..., \sigma_{\scriptscriptstyle c,j}\}$
+
+%\item encrypts $k_{\scriptscriptstyle 1}^{\scriptscriptstyle j}$ using the time-lock encryption, such that it can be decrypted at time $t^{\scriptscriptstyle j}_{\scriptscriptstyle 1}$, i.e., $C^{\scriptscriptstyle j}_{\scriptscriptstyle 1}=\mathcal{ENC}^{\scriptscriptstyle pk}_{\scriptscriptstyle sk,T}(k_{\scriptscriptstyle 1}^{\scriptscriptstyle j})$, where $T=t^{\scriptscriptstyle j}_{\scriptscriptstyle 1}\cdot S$, and $S$ is a parameter of the encryption: the number of squaring modulo $N$ per second that can be performed by a solver. Also, it uses the time-lock encryption to encrypt $k^{\scriptscriptstyle j}_{\scriptscriptstyle 2}$, such that it can be decrypted at time $ t^{\scriptscriptstyle j}_{\scriptscriptstyle 2}$,  i.e., $C^{\scriptscriptstyle j}_{\scriptscriptstyle 2}=\mathcal{ENC}^{\scriptscriptstyle pk}_{\scriptscriptstyle sk,T'}(k_{\scriptscriptstyle 2}^{\scriptscriptstyle j})$, where $T'= t^{\scriptscriptstyle j}_{\scriptscriptstyle 2}\cdot S$ and $t^{\scriptscriptstyle j}_{\scriptscriptstyle 2}> t^{\scriptscriptstyle j}_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 2}$,  $\Delta_{\scriptscriptstyle 1}$  is the time period within which some local computation (by the server) is performed on $k^{\scriptscriptstyle j}_{\scriptscriptstyle 1}$ and $\Delta_{\scriptscriptstyle 2}$ is the time window in which a message, e.g. $k^{\scriptscriptstyle j}_{\scriptscriptstyle 1}$, is (sent by the server and) received by the contract. Note that, the size of time windows are sufficiently large.
+
+%\item\label{gen-hashes} computes $h_{\scriptscriptstyle j}= H(l_{\scriptscriptstyle j})$.
+
+
+%$\resizeT{\textit{w}}_{\resizeS {\textit  j}}$
+
+%\resizeS {\textit  w}_{\resizeS {\textit  j}}}
+
+\end{enumerate} 
+
+\item\label{Gen-Puzzles-}\textbf{\textit{\small {Gen. Puzzles}}}: Sets $\vv{\bm{m}}=[v_{\scriptscriptstyle 1},l_{\scriptscriptstyle 1},...,v_{\scriptscriptstyle z},l_{\scriptscriptstyle z}]$  and then encrypts the vector's elements, by running: $\mathtt{GenPuz}(\vv{\bm{m}},pk,sk)$ in   C-TLP scheme. This yields a  puzzle vector: $[(V_{\scriptscriptstyle 1},L_{\scriptscriptstyle 1}),...,(V_{\scriptscriptstyle z},L_{\scriptscriptstyle z})]$ and a commitment vector $\vv{\bm{h}}$. The encryption is done in  such a way that in each $j\text{\small{-th}}$ pair, $V_{\scriptscriptstyle j}$ will be fully decrypted at times $t_{\scriptscriptstyle j}$ and $L_{\scriptscriptstyle j}$ will be decrypted at time $t'_{\scriptscriptstyle j}$, where  $ t_{\scriptscriptstyle j}+\Delta_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 2}\leq t'_{\scriptscriptstyle j} < t_{\scriptscriptstyle j+1}$  %$\Delta_{\scriptscriptstyle 1}$  is the maximum  period  the server needs to generate a proof and $\Delta_{\scriptscriptstyle 2}$ is the time window in which a message is (sent by the server and) received by the contract.
+
+
+
+
+%\item Using  C-TLP scheme, generates a key pair: ($sk_{\scriptscriptstyle 1}, pk_{\scriptscriptstyle 1}$) and  encrypts    $[v_{\scriptscriptstyle 1},...,v_{\scriptscriptstyle z}]$ such that they will be fully decrypted at times $[t_{\scriptscriptstyle 1},...,t_{\scriptscriptstyle z}]$ respectively. This yields a  ciphertext vector: $[V_{\scriptscriptstyle 1},...,V_{\scriptscriptstyle z}]$. Invoking  C-TLP scheme again, it generates key pairs: ($sk_{\scriptscriptstyle 2}, pk_{\scriptscriptstyle 2}$) and  encrypts    $[l_{\scriptscriptstyle 1},...,l_{\scriptscriptstyle z}]$ that will be fully decrypted at times $[t'_{\scriptscriptstyle 1},...t'_{\scriptscriptstyle z}]$ respectively.  This yields a  ciphertext vector: $[L_{\scriptscriptstyle 1},...,L_{\scriptscriptstyle z}]$. Note,   $t'_{\scriptscriptstyle j}\geq t_{\scriptscriptstyle j}+\Delta_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 2}$, where $\Delta_{\scriptscriptstyle 1}$  is the maximum time period  the server needs to generate a proof and $\Delta_{\scriptscriptstyle 2}$ is the time window in which a message is (sent by the server and) received by the contract.
+
+%\item And another one  with input messages  $l_{\scriptscriptstyle 1},...,l_{\scriptscriptstyle z}$ that will be decrypted at times $t'_{\scriptscriptstyle 1},...t'_{\scriptscriptstyle z}$ respectively, where  $t'_{\scriptscriptstyle j}=t_{\scriptscriptstyle j}+\Delta_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 2}$,  $\Delta_{\scriptscriptstyle 1}$  is the time period within which some local computation (by the server) is performed on $v_{\scriptscriptstyle j}$ and $\Delta_{\scriptscriptstyle 2}$ is the time window in which a message, e.g. $v_{\scriptscriptstyle j}$, is (sent by the server and) received by the contract. %Note that, the size of time windows are sufficiently large.
+
+
+
+\item\label{Outsource-File}\textbf{\textit{\small {Outsource File}}}: Stores ${\bm{F}},n,\hat{pk}, \{\sigma,\sigma_{\scriptscriptstyle 1},..., \sigma_{\scriptscriptstyle z}, (V_{\scriptscriptstyle 1},L_{\scriptscriptstyle 1}),...,(V_{\scriptscriptstyle z},L_{\scriptscriptstyle z})\}$   on the server. Also, it stores $\vv{\bm{h}}$ on the smart contract. 
+\end{enumerate}
+
+
+\item\textit{\textbf{Cloud-Side Proof Generation}}. For   $j\text{\small{-th}}$ verification  ($1\leq j\leq z$), the cloud:
+
+
+\begin{enumerate} 
+\item\label{Solve-Puzzle-Regen-Indices}\textbf{\textit{\small {Solve Puzzle and Regen.  Indices}}}.   Receives and parses the output of $\mathtt{SolvPuz}(.)$ in C-TLP, to extract $v_{\scriptscriptstyle j}$, at time $t_{\scriptscriptstyle j}$. Next, using $v_{\scriptscriptstyle j}$, it regenerates $c$ pseudorandom indices. 
+
+$$\forall b, 1\leq b\leq c: x_{\scriptscriptstyle b,j}=\mathtt{PRF}(v_{\scriptscriptstyle j}, b)\bmod n$$ %where $v_{\scriptscriptstyle j}$ is the key fully decrypted by the cloud at time $t_{\scriptscriptstyle j}$ for this verification.
+
+
+\item \textbf{\textit{\small {Extract Key}}}. Extracts a seed: $u_{\scriptscriptstyle j}$, from the blockchain as follows: $u_{\scriptscriptstyle j}=\mathtt{H}( \mathcal {B}_{\scriptscriptstyle \gamma}||...||  \mathcal {B}_{\scriptscriptstyle \zeta})$, where $\gamma=w+(j-1)\cdot g$ and $\zeta=w+j\cdot g$
+
+\item\label{Gen-PoR}\textbf{\textit{\small {Gen. PoR}}}. Generates a PoR proof. 
+
+$$\mu_{\scriptscriptstyle j}=\sum\limits^{\scriptscriptstyle c}_{\scriptscriptstyle b=1}  \mathtt{PRF}(u_{\scriptscriptstyle j},b)\cdot F_{\scriptscriptstyle y}\bmod p, \  \  \ \xi_{\scriptscriptstyle j}= \sum\limits^{\scriptscriptstyle c}_{\scriptscriptstyle b=1}  \mathtt{PRF}(u_{\scriptscriptstyle j},b)\cdot \sigma_{\scriptscriptstyle b,j}\bmod p$$
+ 
+ where  $y$ is a pseudorandom index: $y= x_{\scriptscriptstyle b,j}$ %Also, it runs $\mathtt{Prove}(.)$ in C-TLP, to generate a proof: $\ddot{p}_{\scriptscriptstyle j}$, of $v_{\scriptscriptstyle j}$'s correctness
+ 
+ \item\label{Register-Proofs}\textbf{\textit{\small {Register Proofs}}}.  Sends the PoR proof: $(\mu_{\scriptscriptstyle j},\xi_{\scriptscriptstyle j})$   to the smart contract within  $\Delta_{\scriptscriptstyle1}$
+ \item\label{fully-recover-l}\textbf{\textit{\small {Solve Puzzle and Regen.  Verification Key}}}: Receives and parses the output of $\mathtt{SolvPuz}(.)$ in C-TLP to extract $l_{\scriptscriptstyle j}$, at time $t'_{\scriptscriptstyle j}$. Also, it runs $\mathtt{Prove}(.)$ in C-TLP, to generate a proof: $\ddot{p}_{\scriptscriptstyle j}$, of $l_{\scriptscriptstyle j}$'s correctness. It sends $\ddot{p}_{\scriptscriptstyle j}$ (containing $l_{\scriptscriptstyle j}$)  to the contract, so it can be received by the contract within $\Delta_{\scriptscriptstyle 2}$ 
+\end{enumerate}
+
+
+\item \textit{\textbf{Smart Contract-Side Verification}}. For   $j\text{\small{-th}}$ verification  ($1\leq j\leq z$), the contract:
+
+
+
+\begin{enumerate} 
+\item\textbf{\textit{\small {Check Arrival Time}}}: checks the arrival time of the decrypted values sent by the server. In particular, it checks, if $(\mu_{\scriptscriptstyle j},\xi_{\scriptscriptstyle j})$ was received in the time window: $(t_{\scriptscriptstyle j}, t_{\scriptscriptstyle j}+\Delta_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 2}]$ and whether $l_{\scriptscriptstyle j}$ was received in the time window: $(t'_{\scriptscriptstyle j}, t'_{\scriptscriptstyle j}+\Delta_{\scriptscriptstyle 2}]$
+
+\item\label{check-hash}\textbf{\textit{\small {Verify Puzzle Solution}}}: runs $\mathtt{Verify}(.)$ in C-TLP to verify $\ddot{p}_{\scriptscriptstyle j}$  (i.e. check the correctness of $l_{\scriptscriptstyle j}\in \ddot{p}_{\scriptscriptstyle j}$). If approved, then regenerates the seed:  $u_{\scriptscriptstyle j}=\mathtt{H}( \mathcal {B}_{\scriptscriptstyle \gamma}||...||  \mathcal {B}_{\scriptscriptstyle \zeta})$, where $\gamma=w+(j-1)\cdot g$ and $\zeta=w+j\cdot g$
+
+
+%$s_{\scriptscriptstyle j}=H( \mathcal {B}_{\resizeS {\textit  w}_{\resizeSS {\textit  j}}}||,...,||  \mathcal {B}_{\resizeS {\textit  w}_{\resizeSS {\textit  j}}+g})$, given parameters $g$ and $\resizeT{\textit{w}}_{\resizeS {\textit  j}}$. 
+
+
+\item\label{verify-PoR}\textbf{\textit{\small {Verify PoR}}}: regenerates the pseudorandom values and verifies the PoR proof.  
+\begin{equation}\label{POR-ver}\xi_{\scriptscriptstyle j}\stackrel{\scriptscriptstyle ?}=\mu_{\scriptscriptstyle j}  \cdot\mathtt{PRF}(l_{\scriptscriptstyle j},c+1)+\sum\limits^{\scriptscriptstyle c}_{\scriptscriptstyle b=1} ( \mathtt{PRF}(u_{\scriptscriptstyle j},b)\cdot \mathtt{PRF}(l_{\scriptscriptstyle j},b))\bmod p
+\end{equation}
+\item\textbf{\textit{\small {Pay}}}: if  Equation \ref{POR-ver} holds, pays and asks the server to delete all disposable tags for this verification, i.e. $\sigma_{\scriptscriptstyle j}$
+\end{enumerate}
+If either check fails, it aborts and notifies the client. 
+
+
+\item \textit{\textbf{Client-server PoR}}: When the client is online, it can   interact  with the server  to check its data availability. In particular, it sends $c$ random challenges and random indices to the server who computes POR using only: (a) the  messages sent by the client in this step, (b) the file: $\bm{F}$, and (c) the tags:  $\sigma_{\scriptscriptstyle i}\in\sigma$, generated in step \ref{gen-client-server-tags}.  The proof generation and verification are similar to the MAC-based schemes, e.g.  \cite{DBLP:conf/asiacrypt/ShachamW08}. 
+\end{enumerate}
+
+
+\input{SO-PoR-Extension}
+\input{SO-PoR-proof}
+
+%
+%\begin{theorem}\label{PoR-main-theorem} SO-PoR protocol is secure  if the MAC's are unforgeable, $\mathtt{PRF}(.)$ is a secure pseudorandom function, the blockchain and C-TLP protocol are secure, and $\mathtt{H}( \mathcal {B}_{\scriptscriptstyle \gamma}||...||  \mathcal {B}_{\scriptscriptstyle \zeta})$ outputs an unpredictable random value (where $\zeta-\gamma$ is a security parameter).
+%\end{theorem}
+%
+%\begin{remark}
+%We refer readers to Appendix \ref{SO-PoR-Security-Proof} for the above theorem's proof.
+%\end{remark}
+%
+%
+%
+%\begin{remark}
+%In SO-PoR, for a security reason the server must record $j$-th PoR proof in the contract before $l_{j}$ is recovered. Also,  the way disposable tags are generated in SO-PoR  differs from those computed  in previous PoR schemes, in spite of having similarities structure-wise. Moreover, with slight adjustments, we can reduce the contract-side storage cost to constant.  For more details, we refer readers to Appendix \ref{SO-PoR-discussion} that also explains why strawman approaches are not suitable substitutes for SO-PoR. 
+%\end{remark}
+%\vspace{-3mm}
+%\subsection{Extension: Reducing Smart Contract Storage Cost to Constant}\label{storage-cost-reduction}
+%
+%
+%With minor adjustments, we can reduce the smart contract storage cost from $O(z)$ to constant, $O(1)$ and offload the cost to the server. The idea is that the client after computing the commitmnet vector: $\vv{\bm{h}}=[h_{\scriptscriptstyle 1},...h_{\scriptscriptstyle z}]$,  in step \ref{Gen-Puzzles-}, it preserves the ordering of the elements (i.e. $h_{\scriptscriptstyle j}$ is associated with $j^{\scriptscriptstyle th} $ verification) and constructs a  Merkle tree  on top of them. It stores the tree and the vector on the server, and stores only the tree's  root: $R$, on the contract. In this case,  the server in step \ref{fully-recover-l} after recovering $\ddot{p}_{\scriptscriptstyle j}= (l_{\scriptscriptstyle j}, d_{\scriptscriptstyle j})$,  computes: $h_{\scriptscriptstyle j}=\mathtt{H}(l_{\scriptscriptstyle j}||d_{\scriptscriptstyle j})$, and sends a Merkle tree proof (that $h_{\scriptscriptstyle j}$ corresponds to  $R$) along with $\ddot{p}_{\scriptscriptstyle j}$ to the contract. In step \ref{check-hash}, the contract: (a) checks if $h_{\scriptscriptstyle j}=\mathtt{H}(l_{\scriptscriptstyle j}||d_{\scriptscriptstyle j})$, and  (b) verifies the Merkle tree proof.  The rest  remains unchanged.  As a result, the number of values stored in the contract is now $O(1)$. This adjustment comes with an added communication cost: $O(|h_{\scriptscriptstyle j}|\log z)$ for each verification. Nevertheless, the added cost is small and independent of the file size.   For instance, when  $z=10^{\scriptscriptstyle 6}$ and $|h_{\scriptscriptstyle j}|=256$, the  added communication cost is only about $5.1$ kilobit.
+
+
+
+%\subsection{Evaluation}
+%
+%In this section, we provide a summary of comparisons between   SO-PoR and outsourced PoRs  \cite{armknecht2014outsourced,xu2016lightweight,Storage-Time}. Among the two protocol in \cite{Storage-Time} we only consider ``basic PoSt'' as it supports public verifiability. Briefly, in terms of property, only SO-PoR offers an explicit solution for real-time detection and fair payment. In terms of computation cost, the verification algorithm in SO-PoR is much faster than other three protocols; Specifically, when $c=460$,  SO-PoR verification requires about $4.5$ times fewer computation than the verification required in the fastest outsourced PoR \cite{armknecht2014outsourced}.   Also, \cite{armknecht2014outsourced} has the worst store cost, which is  much higher than that of SO-PoR; e.g. for a $1$-GB file, SO-PoR requires over $46 \times 10^{\scriptscriptstyle 5}$ times fewer exponentiations than \cite{armknecht2014outsourced} needs in the same phase.  SO-PoR and \cite{Storage-Time} require a server to solve puzzles but the other two protocols do not need that. Also, the I/O cost and proof complexity of all protocols are $O(1)$ except \cite{Storage-Time} whose I/O cost and proof complexity are $O(\log n)$. The server-side bandwidth of SO-PoR is much lower than the rest;  for instance, for $1$-GB file and $z=100$ verifications, a server in SO-PoR requires $9\times 10^{\scriptscriptstyle4}$,  $7$ and $1729$ times fewer bits  than those required in \cite{armknecht2014outsourced}, \cite{xu2016lightweight} and \cite{Storage-Time} respectively.  A client in SO-PoR has a higher bandwidth than the rest of the protocols (but this cost is one-off). Thus, SO-PoR offers additional properties, it has lower verification cost and lower server-side bandwidth than the rest while its other costs remain reasonable. Tables \ref{table::O-PoR-Cost} outlines the cost comparison results. For a  full analysis, we refer readers to Appendix \ref{Full-Evaluation} where  we also compare SO-PoR costs with the costs of the most efficient  traditional PoR  \cite{DBLP:conf/asiacrypt/ShachamW08}.
+%
+
+
+\input{SO-PoR-Full-CostEvaluation.tex}
+
+
+
+
+
+
+
+
+
+
+
+%In general, the overall bandwidth of SO-PoR is much lower than \cite{armknecht2014outsourced}, and is about $9\times$ higher than the outsourced PoR that requires a \emph{trusted} verifier, i.e. \cite{xu2016lightweight}, due to  higher  client-side bandwidth.  Also, a client bandwidth   in SO-PoR requires $128(cz+19z)$  more bits than a client in the privately verifiable PoR \cite{DBLP:conf/asiacrypt/ShachamW08}, while the server's bandwidth in SO-PoR is $3.4$ times higher than that in \cite{DBLP:conf/asiacrypt/ShachamW08}.
+
+
+

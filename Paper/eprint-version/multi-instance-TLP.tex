@@ -1,0 +1,241 @@
+% !TEX root =main.tex
+
+
+
+
+\section{Multi-instance  Time-lock Puzzle}
+
+
+
+
+\subsection{Strawman Solution}\label{C-TLP-overview}
+
+In the following, we elaborate on the  problems that would arise if an existing time-lock puzzle is used directly to handle  multiple puzzles at once.  Without loss of generality, to illustrate the problems, we use the well-known TLP scheme presented in Section \ref{Time-lock-Encryption}. 
+
+
+
+Consider the case where a client wants a server to learn a vector of messages: $\vv{\bm{m}}=[m_{\scriptscriptstyle 1},...,m_{\scriptscriptstyle z}]$ at times  $[f_{\scriptscriptstyle 1},...,f_{\scriptscriptstyle z}]$ respectively, where the client is available and online only at an earlier time $f_{\scriptscriptstyle 0}< f_{\scriptscriptstyle 1}$.  For the sake of simplicity, let $\Delta=f_{\scriptscriptstyle 1}-f_{\scriptscriptstyle 0}$ and $\Delta=f_{\scriptscriptstyle j+1}-f_{\scriptscriptstyle j}$, where $1\leq j \leq z$. A naive way to address the problem is that the client uses the TLP  to encrypt each message $m_{\scriptscriptstyle j}$ separately, such that it can be decrypted at time $f_{\scriptscriptstyle j}$ if  all ciphertexts and public keys are passed on to the server at time $t_{\scriptscriptstyle 0}$.  For the server to decrypt the messages  on time, it needs to start decrypting \emph{all of them} as soon as the ciphertexts and public keys are given to it. 
+
+
+
+\noindent\textit{\textbf{Parallel Composition Problem}}. The above naive approach yields two serious issues: (a) imposing a high computation cost, as  the server has to perform $S\Delta \sum\limits_{\scriptscriptstyle j=1}^{\scriptscriptstyle z}j$ squaring to decrypt all   messages, and (b) demanding a high level of parallelisation, as each puzzle has to be dealt with separately in parallel to the rest.  The  issues can be cast  as  ``\emph{parallel composition problem}'', where $z$ instances of a puzzle scheme are given at once to a server whose only option, to find solutions on time, is to solve them in parallel\footnote{It should not be confused with the ``universally composable'' notion put forth in \cite{Canetti01}.}. Also, for the client  to efficiently compute $a_{\scriptscriptstyle j}$  for each  message $m_{\scriptscriptstyle j}$,  where $j>1$, it has to perform at least one modular multiplication, i.e. $a_{\scriptscriptstyle j}=a_{\scriptscriptstyle 1} a_{\scriptscriptstyle j-1}=2^{\scriptscriptstyle j  T}$, where $a_{\scriptscriptstyle 1}=2^{\scriptscriptstyle T}$. In this step, in total $z-1$ modular multiplications are required  to compute all $a_{\scriptscriptstyle j}$ values, for $z$ messages (which is not optimal). We highlight that we do not see the above issues as  previous schemes' flaws, because they were not initially designed for the multi-puzzle setting.  
+ 
+
+
+%
+
+ \subsection{An Overview of our Solutions}\label{Overview-of-our-Solutions}
+ Our key observation is, in the naive approach, the process of decrypting  messages has many overlaps  leading to a high  computation cost. So,  by removing the overlaps, we can considerably lower the overall cost both in \emph{puzzle solving} and \emph{puzzle creating} phases.  One of our core ideas  is to chain the puzzles. While chaining different puzzles seems a relatively obvious approach to tackle the  issues, designing a secure protocol that also can make black-box use of a standard time-lock puzzle, supports public verifiability, and has low costs is challenging. In our solution, a client  first encrypts the message  that is supposed to be decrypted after the rest, and embeds the information needed for decrypting it into the ciphertext of the message that will be decrypted before that message. In other words, the client integrates the information (i.e. a part of public keys) needed to decrypt message $m_{\scriptscriptstyle j}$ into the ciphertext related to message $m_{\scriptscriptstyle j-1}$. In this case, the server after learning message $m_{\scriptscriptstyle j-1}$ at time $f_{\scriptscriptstyle j-1}$ learns the public key needed to perform the sequential squaring to decrypt the next message: $m_{\scriptscriptstyle j}$. This means after fully decrypting $m_{\scriptscriptstyle j-1}$, the server starts  squaring sequantially to decrypt $m_{\scriptscriptstyle j}$. 
+  
+  
+  
+  \noindent\textit{\textbf{Addressing Parallel Composition Problem}}.  The above approach solves the parallel composition problem for two main reasons.  First, the total  number of squaring required to decrypt all $z$ messages is now much lower, i.e. $S \Delta z$, and is equivalent to the number of squaring needed to solve only the last puzzle,  i.e. $z\text{-th}$ one. Second, it does not call for  high parallelisation. Because now the server does not need to deal with all of the puzzles in parallel; instead, it solves them sequentially one after another.  
+  
+  
+  
+  \noindent\textit{\textbf{Adding Efficient Publicly Verifiable Algorithm}}. To let the  scheme  support  efficient public verifiability, we use the following novel trick. The client uses a commitment scheme to commit to every message: $m_{\scriptscriptstyle i}$ and publishes the  commitment. Then, it uses the time-lock encryption to encrypt the commitment's opening, i.e. a combination of $m_{\scriptscriptstyle i}$ and a random value. But, unlike the traditional commitment, the client does not open the commitment itself. Instead, the server does that, after it discovers the puzzle's solution.  When it finds a solution, it decodes the solution to find the opening and sends it to the public who can check the solution correctness. So, to verify  solution correctness,   a verifier  only needs to run the commitment's verification algorithm that is: (a)  publicly verifiable, and (b)   efficient. It can be built in the random oracle  or  the standard model.
+  
+    The approach also allows  the client at the setup to compute only a single $a=2^{\scriptscriptstyle T}$  reusable for all $z$ puzzles, imposing only $O(1)$  cost. 
+
+
+
+\subsection{Multi-instance   Time-lock Puzzle Definition}\label{Section::Multi-instance-Time-lock Puzzle-Definition}
+In this section, we provide a formal definition of a multi-instance time-lock puzzle. Our starting point is the  time-lock puzzle definition, i.e. Definition \ref{Def::Time-lock-Puzzle}, but we extend it from several  perspectives, so it can: (a) handle multiple  solutions/messages in setup, (b)  produce multiple puzzles for the messages,   (c) solve the puzzles given the puzzles and public parameters, and (d) support public verifiability. In the following, we provide the formal definition of a multi-instance  time-lock puzzle.
+\begin{definition}[Multi-instance Time-lock Puzzle] A multi-instance time-lock puzzle has the following  five algorithms, and satisfies completeness and efficiency properties. 
+\begin{itemize}[leftmargin=.43cm]
+\item \textbf{Algorithms}:
+\begin{itemize} 
+\item[$\bullet$]$\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta,z)\rightarrow (pk,sk,\vv{\bm{d}})$:  a probabilistic algorithm that takes as input  security: $1^{\scriptscriptstyle\lambda}$ and time:  $\Delta$ parameters and the total number of solutions/puzzles: $z$. Let     $j \Delta$ be a time period after which $j\text{\small{-th}}$ solution is found.   It outputs public-private key pair: $(pk,sk)$ and a vector of fixed size  secret witnesses: $\vv{\bm{d}}$
+
+
+%\vv{\bm{s}}
+\item[$\bullet$]$\mathtt {GenPuz}(\vv{\bm{m}}, pk, sk,\vv{\bm{d}})\rightarrow \ddot{o}$:  a probabilistic algorithm that takes as an input  a  message vector: $\vv{\bm{m}}=[m_{\scriptscriptstyle 1},...,m_{\scriptscriptstyle z}]$,  the public-private key pair: $(pk,sk)$, and the witness vector: $\vv{\bm{d}}$. It  outputs $\ddot{o}:(\vv{\bm{o}},\vv{\bm{h}})$, where $\vv{\bm{o}}$ is a puzzle vector, and $\vv{\bm{h}}$ is a commitment vector. Each $j\text{\small{-th}}$ element in  vectors $\vv{\bm{o}}$ and $\vv{\bm{h}}$ corresponds to a solution $s_{\scriptscriptstyle j}$ of the form: $s_{\scriptscriptstyle j}=m_{\scriptscriptstyle j}||d_{\scriptscriptstyle j}$ %Given $s_{\scriptscriptstyle j}$ and $b$, a public decoding function, $\mathtt{Decode}()$ returns $m_{\scriptscriptstyle j}$, i.e. $\mathtt{Decode}(s_{\scriptscriptstyle j},b)\rightarrow m_{\scriptscriptstyle j}$. 
+ 
+\item[$\bullet$]$\mathtt {SolvPuz}(pk,\vv{\bm{o}})\rightarrow \vv{\bm{s}}$:   a deterministic algorithm that takes as input  the public key: $pk$ and  puzzle vector: $\vv{\bm{o}}$. It outputs a solution vector: $\vv{\bm{s}}$
+
+\item[$\bullet$]$\mathtt {Prove}(pk,s_{\scriptscriptstyle j})\rightarrow \ddot{p}_{\scriptscriptstyle j}$:  a deterministic algorithm that takes the public key: $pk$ and a solution: $s_{\scriptscriptstyle j}\in\vv{\bm{s}}$. It outputs a proof, $\ddot{p}_{\scriptscriptstyle j}:(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$
+\item[$\bullet$]$\mathtt {Verify}(pk,\ddot{p}_{\scriptscriptstyle j},h_{\scriptscriptstyle j})\rightarrow \{0,1\}$:  a deterministic algorithm that takes  public key: $pk$,  proof: $\ddot{p}_{\scriptscriptstyle j}$ and commitment: $h_{\scriptscriptstyle j}\in \vv{\bm{h}}$. It outputs  $0$ if it rejects, or $1$ if it accepts. 
+\end{itemize}
+
+
+
+\item \textbf{Completeness}: for any honest prover and verifier, it always holds that: 
+\begin{itemize}
+\item$\mathtt{SolvPuz}(pk,[o_{\scriptscriptstyle 1},...,o_{\scriptscriptstyle j}])=[s_{\scriptscriptstyle1},...,s_{\scriptscriptstyle j}]$, for every $j$, $1\leq j\leq z$. 
+
+\item $\mathtt {Verify}(pk,\mathtt {Prove}(pk,s_{\scriptscriptstyle j}),h_{\scriptscriptstyle j})\rightarrow 1$
+\end{itemize}
+
+
+
+\item \textbf{Efficiency}: the run-time of algorithm $\mathtt {SolvPuz}(pk,[o_{\scriptscriptstyle 1},...,o_{\scriptscriptstyle j}])=[s_{\scriptscriptstyle1},...s_{\scriptscriptstyle j}]$ is bounded by:  $ poly(j\Delta,\lambda)$, where $poly(.)$ is a fixed polynomial and  $1\leq j\leq z$
+\end{itemize}
+\end{definition}
+ 
+Informally, a multi-instance time-lock puzzle is secure if it satisfies two properties:  a solution's \emph{privacy} and  \emph{validity}. The former  requires  its $j\text{\small{-th}}$ solution   to remain hidden from all adversaries running in parallel within  time period: $j \Delta$, while the latter one requires that it is  infeasible for  a PPT adversary to come up with an invalid solution  and passes the verification. The two properties are formally defined in Definitions \ref{Def::Solution-Privacy} and \ref{Def::Solution-Validity}.
+ 
+
+ 
+ 
+ 
+% \begin{definition}[Chained Time-lock Puzzle's Sequentiality] For functions  $\pi(t)$ and $\delta(t)$, a  chained time-lock puzzle is $(\pi,\delta)$-sequential if for any pair of randomised algorithm $\mathcal{A} : (\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$, where $\mathcal{A}_{\scriptscriptstyle 1}$ runs in total time $O(poly(t,\lambda))$ and $\mathcal{A}_{\scriptscriptstyle 2}$ runs in  time $\delta(t)$ using at most $\pi(t)$ parallel processors, there exists a negligible function $\mu(.)$ such that: 
+% 
+ 
+ 
+% $$ Pr\left[    \begin{array}{l}  \mathcal{A}_{\scriptscriptstyle 2}(pk, \ddot{o},state)\rightarrow s \\
+% s.t.\\
+% s=\mathtt {SolvPuz}(pk,\theta)
+% 
+%   \end{array}
+%   \middle |
+%    \begin{array}{l}
+%\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta,1)\rightarrow (pk,sk,\vv{\bm{d}})\\
+%\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk, \Delta,1)\rightarrow state\\
+%m\stackrel{\scriptscriptstyle\$}\leftarrow \mathcal{M}\\
+%\mathtt {GenPuz}(m, pk, sk)\rightarrow \ddot{o}\\
+%\end{array}    \right]\leq \mu(\lambda)$$
+%  \end{definition}
+%  where $\theta\in \ddot{o}$.
+  
+%   $$ Pr\left[    \begin{array}{l}  \mathcal{A}_{\scriptscriptstyle 2}(pk, \ddot{o},state)\rightarrow a \\
+% s.t.\\
+%m'=\mathtt{Decode}(\mathtt {SolvPuz}(pk,\theta),b)\\
+% a=m'
+% 
+%   \end{array}
+%   \middle |
+%    \begin{array}{l}
+%\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta,1)\rightarrow (pk,sk,\vv{\bm{d}})\\
+%\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk, \Delta,1)\rightarrow state\\
+%m\stackrel{\scriptscriptstyle\$}\leftarrow \mathcal{M}\\
+%\mathtt {GenPuz}(m, pk, sk)\rightarrow \ddot{o}\\
+%\end{array}    \right]\leq \mu(\lambda)$$
+%  \end{definition}
+%  where $\theta\in \ddot{o}$.
+%  
+%  
+%  
+%  xxx The above definition also captures the sequentiality for a single solution as well that means the adversary cannot find a single solution significantly less than required steps. 
+%  
+ 
+  
+  
+\begin{definition}[Multi-instance Time-lock Puzzle's Solution-Privacy]\label{Def::Solution-Privacy} A multi-instance time-lock puzzle  is privacy-preserving  if for all $\lambda$ and  $\Delta$,  any number of puzzle: $z\geq1$, any pair of randomised algorithm $\mathcal{A} : (\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$, where $\mathcal{A}_{\scriptscriptstyle 1}$ runs in  time $O(poly(j\Delta,\lambda))$ and $\mathcal{A}_{\scriptscriptstyle 2}$ runs in  time $\delta(j\Delta)<j\Delta$ using at most $\pi(\Delta)$ parallel processors, there exists a negligible function $\mu(.)$, such that: 
+
+
+$$ Pr\left[  \begin{array}{l} 
+ \mathcal{A}_{\scriptscriptstyle 2}(pk,\ddot{o},\text{state})\rightarrow \ddot{a}\\
+ \text{s.t.}\\
+\ddot{a}:(b_{\scriptscriptstyle i},i)\\
+  m_{\scriptscriptstyle b_{\scriptscriptstyle i},i}=m_{\scriptscriptstyle b_{\scriptscriptstyle j},j} 
+  \end{array}
+ \middle |
+    \begin{array}{l}
+\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta,z)\rightarrow (pk,sk,\vv{\bm{d}})\\
+%\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk,z)\rightarrow ([(m_{\scriptscriptstyle 0,1},m_{\scriptscriptstyle 1,1}),...,(m_{\scriptscriptstyle 0,z},m_{\scriptscriptstyle 1,z})],state)\\
+\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk,z)\rightarrow (\vv{\bm{m}},\text{state})\\
+\left[b_{\scriptscriptstyle 1},...,b_{\scriptscriptstyle z}\right], b_{\scriptscriptstyle j}\stackrel{\scriptscriptstyle\$}\leftarrow \{0,1\}\\
+%\mathtt {GenPuz}((m_{\scriptscriptstyle b_{\scriptscriptstyle 1},\scriptscriptstyle 1},..., m_{\scriptscriptstyle b_{\scriptscriptstyle z},\scriptscriptstyle z}), pk, sk,\vv{\bm{d}})\rightarrow \ddot{o}\\
+\mathtt {GenPuz}(\vv{\bm{m}}', pk, sk,\vv{\bm{d}})\rightarrow \ddot{o}\\
+\end{array}    \right]\leq \frac{1}{2}+\mu(\lambda)$$
+
+where  $\vv{\bm{m}}: [(m_{\scriptscriptstyle 0,1},m_{\scriptscriptstyle 1,1}),...,(m_{\scriptscriptstyle 0,z},m_{\scriptscriptstyle 1,z})]$, $\vv{\bm{m}}':(m_{\scriptscriptstyle b_{\scriptscriptstyle 1},\scriptscriptstyle 1},..., m_{\scriptscriptstyle b_{\scriptscriptstyle z},\scriptscriptstyle z})$, $1\leq j\leq z$ and $1\leq i\leq z$
+%$b_{\scriptscriptstyle j'}\in \left[b_{\scriptscriptstyle 1},...,b_{\scriptscriptstyle z}\right]$. 
+\end{definition}
+
+%all probabilistic polynomial time adversaries $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$ whose run-time is  bounded by  $T_{\scriptscriptstyle j}=j\cdot poly(\lambda,\Delta)$, where  $j\in [ 1,z]$, 
+
+
+The  definition above also ensures  the  solutions to appear after $j\text{\small{-th}}$ one,  remain hidden from the adversary with a high probability, as well. Similar to \cite{BonehBBF18,MalavoltaT19,garay2019}, it captures that even if     $\mathcal{A}_{\scriptscriptstyle 1}$ computes on the public parameters for a polynomial time,  $\mathcal{A}_{\scriptscriptstyle 2}$  cannot find $j\text{\small{-th}}$  solution in time $\delta(j\Delta)<j\Delta$ utilising $\pi(\Delta)$ parallel processors, with a probability significantly greater than $\frac{1}{2}$. As highlighted in  \cite{BonehBBF18}, we can set $\delta(\Delta)=(1-\epsilon)\Delta$ for a small  $\epsilon$, where $0<\epsilon<1$.
+\begin{definition}[Multi-instance Time-lock Puzzle's Solution-Validity]\label{Def::Solution-Validity}
+A multi-instance time-lock puzzle preserves a   solution validity,   if  for all $\lambda$ and  $\Delta$,  any number of puzzles: $z\geq1$, all probabilistic polynomial time adversaries $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$ that run in  time $O(poly(\Delta,\lambda))$ there is  negligible function $\mu(.)$, such that: 
+
+$$ Pr\left[
+    \begin{array}{l}
+ \mathcal{A}_{\scriptscriptstyle 2}(pk,\vv{\bm{s}}, \ddot{o},\text{state})\rightarrow a\\ 
+ 
+ \text{s.t.}\\ 
+a:(j,\ddot{p}_{\scriptscriptstyle j} ,\ddot{p}')\\
+ \ddot{p}_{\scriptscriptstyle j}: (m_{\scriptscriptstyle j},d_{\scriptscriptstyle j}), 
+\ddot{p}':(m',d') \\
+ m_{\scriptscriptstyle j}\in \vv{{\bm{m}}}, d_{\scriptscriptstyle j}\in\vv{{\bm{d}}},
+m\neq m'\\
+\mathtt {Verify}(pk,\ddot{p},h_{\scriptscriptstyle j})= 1\\
+\mathtt {Verify}(pk,\ddot{p}',h_{\scriptscriptstyle j})= 1\\
+\end{array} 
+\middle |
+\begin{array}{l}
+
+\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta,z)\rightarrow (pk,sk,\vv{\bm{d}})\\
+\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk, \Delta,z)\rightarrow (\vv{{\bm{m}}},\text{state})\\
+
+\mathtt {GenPuz}(\vv{{\bm{m}}}, pk, sk,\vv{\bm{d}})\rightarrow \ddot{o} \\
+\mathtt {SolvPuz}(pk,\vv{\bm{o}})\rightarrow \vv{\bm{s}}
+
+\end{array} 
+   \right]\leq  \mu(\lambda)$$
+   
+where $\vv{{\bm{m}}}=[m_{\scriptscriptstyle 1},...,m_{\scriptscriptstyle z}]$, and $h_{\scriptscriptstyle j}\in \vv{\bm{h}}\in \ddot{o}$
+\end{definition}
+
+
+%In Definition \ref{Def::Solution-Validity}, we do not need to bound the adversaries' parallel computation power, as it does not need to solve any puzzles, in fact  puzzles' solutions are provided to them. Therefore, they can run in polynomial time $O(poly(\Delta,\lambda))$.
+% 
+\begin{definition}[Multi-instance Time-lock Puzzle Security]\label{def::C-TLP-security} A multi-instance time-lock puzzle scheme  is secure if it meets solution-privacy and solution-validity properties. 
+\end{definition}
+
+
+
+\subsection{Chained  Time-lock Puzzle (C-TLP) Protocol}\label{Section::C-TLP-protocol}
+
+In this section, we present the chained  time-lock puzzle (C-TLP), an instantiation of the multi-instance time lock puzzle. Recall, a client wants a server to learn a vector of messages: $\vv{\bm{m}}=[m_{\scriptscriptstyle 1},...,m_{\scriptscriptstyle z}]$ at times  $[f_{\scriptscriptstyle 1},...,f_{\scriptscriptstyle z}]$ respectively, where the client is available and online only at an earlier time $f_{\scriptscriptstyle 0}< f_{\scriptscriptstyle 1}$.  Also, the client wants to ensure that anyone can validate a solution found by the  server, i.e. supports public verifiability. For the sake of simplicity, let $\Delta=f_{\scriptscriptstyle 1}-f_{\scriptscriptstyle 0}$ and $\Delta=f_{\scriptscriptstyle j+1}-f_{\scriptscriptstyle j}$, where $1\leq j \leq z$ and $T=S \Delta$.  In  C-TLP, the client at the setup, first calls   $\mathtt{TLP.Setup}()$ to generate a key pair: $(\hat{pk},\hat{sk})$, where   $\hat{pk}=(N,T,r_{\scriptscriptstyle 1})$ and $\hat{sk}=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},a,k_{\scriptscriptstyle 1})$. It also generates further secret parameters. In particular,  it allocates to each  element $m_{\scriptscriptstyle j}$ (for all  $j, 2\leq j\leq z$) a random group generator $r_{\scriptscriptstyle j}$. Also, to every element in $\vv{\bm{m}}$ it assigns a random value: $d_{\scriptscriptstyle j}$ (for a commitment scheme) and a  secret key: $k_{\scriptscriptstyle j}$ (for a symmetric key encryption).  It sets $pk=(N,r_{\scriptscriptstyle 1},T)$ as public key and $sk=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},\vv{\bm{r}},\vv{\bm{k}},\vv{\bm{d}})$ as secret key, where $\vv{\bm{r}}=[r_{\scriptscriptstyle 2},...,r_{\scriptscriptstyle z}]$,  $\vv{\bm{k}}=[k_{\scriptscriptstyle 1},...,k_{\scriptscriptstyle z}]$, and $\vv{\bm{d}}=[d_{\scriptscriptstyle 1},...,d_{\scriptscriptstyle z}]$. Note that  it keeps secret all generators, except $r_{\scriptscriptstyle 1}$. 
+
+
+
+For the client to generate puzzles for messages in $\vv{\bm{m}}$, it starts from the last message to be revealed: $m_{\scriptscriptstyle z}$. It encrypts the message the same way as is done in  TLP with a difference that it first encodes the message as: $m_{\scriptscriptstyle z}||d_{\scriptscriptstyle z}$ and encrypts the encoded message. In particular, it sets $pk_{\scriptscriptstyle z}=(N,T,r_{\scriptscriptstyle z})$ as public key  and $sk_{\scriptscriptstyle z}=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},a,k_{\scriptscriptstyle z})$ as secret key. Then, it calls   $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle z}||d_{\scriptscriptstyle z},pk_{\scriptscriptstyle z},sk_{\scriptscriptstyle z})\rightarrow \ddot{o}_{\scriptscriptstyle z}$ to create a puzzle. Also, it commits to  $m_{\scriptscriptstyle z}$ using $d_{\scriptscriptstyle z}$ as the commitment randomness. Then, it moves on to the next message: $m_{\scriptscriptstyle j-1}$ that should be revealed before $m_{\scriptscriptstyle j}$ and creates a puzzle for $m_{\scriptscriptstyle j-1}$. In this case, it first concatenates the message with both $d_{\scriptscriptstyle j-1}$ and $r_{\scriptscriptstyle z}$ (where $r_{\scriptscriptstyle z}$ is the generator used for $m_{\scriptscriptstyle z}$) and then  encrypts the concatenation by calling the puzzle generator algorithm in   TLP, i.e.  $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle z-1}||d_{\scriptscriptstyle z-1}||r_{\scriptscriptstyle z},pk_{\scriptscriptstyle z-1},sk_{\scriptscriptstyle z-1})\rightarrow \ddot{o}_{\scriptscriptstyle z-1}$.  As before, it commits to  $m_{\scriptscriptstyle z-1}$ where  $d_{\scriptscriptstyle z-1}$ is used as the commitment randomness.  It follows the same procedure to create puzzles and  commitments for the rest of the messages, in descending order. But,  after creating a puzzle and commitment for  $m_{\scriptscriptstyle 1}$, it publishes $r_{\scriptscriptstyle 1}$ as a part of  the public key. 
+
+   For the server to  solve the puzzles, it  starts from the first one:  $\ddot{o}_{\scriptscriptstyle 1}$. It sets public key as $pk_{\scriptscriptstyle 1}=(N,T,r_{\scriptscriptstyle 1})$ and then calls  TLP's solving algorithm, i.e. $\mathtt{TLP.SolvPuz}(pk_{\scriptscriptstyle 1},\ddot{o}_{\scriptscriptstyle 1})\rightarrow x_{\scriptscriptstyle 1}$, where $x_{\scriptscriptstyle 1}=m_{\scriptscriptstyle 1}||d_{\scriptscriptstyle 1}||r_{\scriptscriptstyle 2}$. It  extracts $r_{\scriptscriptstyle 2}$ from the first solution: $x_{\scriptscriptstyle 1}$, and then  starts solving the remaining puzzles  one after another by using $r_{\scriptscriptstyle j+1}$ extracted from $j\text{\small{-th}}$ solution and calling the TLP's solving algorithm. It stops when it finds the last solution: $x_{\scriptscriptstyle z}$. To prove the solutions' correctness, the server only needs to send the commitments' opening (i.e.  $\vv{\bm{m}}=[m_{\scriptscriptstyle 1},...,m_{\scriptscriptstyle z}]$ and $\vv{\bm{d}}=[d_{\scriptscriptstyle 1},...,d_{\scriptscriptstyle z}]$) to a verifier who,  given  the commitments, verifies if each $(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$ matches the related commitment,    and accepts the solutions that pass the verification. Note, the server cannot start from an arbitrary message in $\vv{\bm{m}}$ or solve the puzzle in an arbitrary order, as the generator related to the arbitrary message is yet  unknown  to it. So, to find the generator it has to solve the puzzle, in ascending  order. Fig. \ref{fig::C-TLP} presents C-TLP protocol in detail. 
+   
+   \vspace{-2mm}
+   
+\input{CR-TLP-protocol-v2.tex}
+
+ \input{CR-TLP-proof}
+  \input{CR-TLP-cost}
+%   \begin{theorem}[C-TLP Security]\label{C-TLP-Sec}  C-TLP  is a secure multi-instance time-lock puzzle. 
+%   \end{theorem}
+%   
+%\begin{proof}[Outline]
+%The proof of Theorem \ref{C-TLP-Sec} relies on the security of the TLP, symmetric key encryption, and commitment schemes. It is also based on the fact that the probability to  find a certain random generator is negligible. It shows both C-TLP's solution privacy (due to security of the above three schemes) and validity (due to the security of the commitment) are satisfied.  We refer readers to Appendix \ref{CR-TLP-Proof} for a detailed proof. 
+%\end{proof}
+
+
+%
+%\begin{remark} Recall, to make each  puzzle instance, a distinct random generator: $r_{\scriptscriptstyle j}$, is used. This is the reason, in  Fig. \ref{fig:CTE}, before a puzzle  is  generated   in step \ref{call-RTLP-GenPuz},  a new public key is set in step \ref{set-pk-in-loop}.  Also, at the beginning of the protocol only $r_{\scriptscriptstyle 1}$ is public and the rest of the generators are kept secret. They are found and used sequentially after their related puzzle is solved. 
+%\end{remark}
+%
+%
+%\begin{remark} The commitments opening, including the commitment random values, are not known to other verifiers (than the puzzle generator) at the beginning of the protocol. At this point,  only the committed values are public. Once a solver solves each puzzle,  it  extracts one of the commitments' opening, and sends it to a public verifier who can check if the opening matches the commitment.  
+%\end{remark}
+%
+%\begin{remark}
+% In Fig. \ref{fig:CTE}, we use the folklore hash-based commitment scheme, in the random oracle model, only to achieve more computation improvement than that can be achieved in the standard model. But C-TLP can utilise any efficient non-interactive commitment scheme in the \emph{standard model} as well, e.g. Pedersen Commitment.
+%\end{remark}
+%
+%
+%\begin{remark}
+%The efficiency of  C-TLP scheme stems from three crucial factors: (a) removing computation overlaps when solving different puzzles: even though solving $j\text{\small{-th}}$ puzzle, where $j>1$, requires $jT$ squaring, $(j-1) T$ of the squaring is used to solve previous puzzles that leads to $\frac{z+1}{2}$ times computation cost reduction at the server-side,  (b)  supporting reusable single  public parameter: $a=2^{\scriptscriptstyle T}$, generated only once that costs $O(1)$, as opposed to the RSA TLP whose cost is linear: $O(z)$, and (c) supporting efficient verification: due to the way each message is encoded (i.e. embedding the opening in a solution). 
+%\end{remark}
+%
+%\begin{remark}
+%C-TLP also can efficiently  be used in a multi-server setting,  where there are $z$ servers: $\{S_{\scriptscriptstyle 1},...,S_{\scriptscriptstyle z}\}$,  each $S_{\scriptscriptstyle j}$ needs to solve puzzle $\ddot{o}_{\scriptscriptstyle j}$ at time $f_{\scriptscriptstyle j}$ and passes on the solution to the next server $S_{\scriptscriptstyle j+1}$ to solve the next puzzle by time $f_{\scriptscriptstyle j+1}>f_{\scriptscriptstyle j}$. In this setting,  due to the scalability property of C-TLP (and unlike using the existing time-lock puzzles naively), other servers do not need to start solving the puzzle   as soon as the client releases puzzles public parameters. Instead, they can wait until the previous solution is issued that saves them significant cost. Furthermore, a  server can first  verify the correctness  of the solution found by the previous server (due to the public verifiability of C-TLP),  if accepted then   it starts finding the next solution. 
+%\end{remark}
+%
+%
+%\begin{remark}
+%In the following, we outline an  approach that looks an option to construct an efficient C-TLP; however, as we will show it would not be secure. In particular,  one uses the TLP to generate $z$ public and secret key pairs. Then, it uses the TLP to compute $z\text{\small{-th}}$ puzzle as $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle z},pk_{\scriptscriptstyle z},sk_{\scriptscriptstyle z})\rightarrow \ddot{o}_{\scriptscriptstyle z}$.  Then, it embeds $\ddot{o}_{\scriptscriptstyle z}$ into $(z-1)\text{\small{-th}}$ one, i.e. $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle z-1}||\ddot{o}_{\scriptscriptstyle z},pk_{\scriptscriptstyle z-1},sk_{\scriptscriptstyle z-1})\rightarrow \ddot{o}_{\scriptscriptstyle z-1}$. This process goes on until $\ddot{o}_{\scriptscriptstyle 1}$  is created. It sends the combined puzzles and public key (including all random generators) to the server; with the hope that puzzles can be solved sequentially and the time gap between finding two solutions will be $\Delta$.  This approach is not secure, because as soon as the server accesses $\ddot{o}_{\scriptscriptstyle 1}$ and public parameters, it can in parallel perform $T$ squaring on every generator, i.e. $r^{\scriptscriptstyle 2^{\scriptscriptstyle T}}_{\scriptscriptstyle i}$, for all $i, 1\leq i\leq z$. In this case, as soon as $\ddot{o}_{\scriptscriptstyle 1}$ is solved and  $\ddot{o}_{\scriptscriptstyle 2}$  is extracted, it has enough information to  immediately solve $\ddot{o}_{\scriptscriptstyle 2}$ and accordingly the rest of the puzzles without doing any further exponentiation. 
+ %\end{remark}
+ 
+ 
+
+ % \input{CR-TLP-proof}

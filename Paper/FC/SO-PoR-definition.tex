@@ -1,0 +1,170 @@
+% !TEX root =main.tex
+
+
+
+
+\section {SO-PoR Model}\label{SO-PoR-Model}
+In this section, we provide a formal definition  of SO-PoR. As previously stated, it builds upon the traditional PoR model \cite{DBLP:conf/asiacrypt/ShachamW08}, presented in Appendix \ref{PoR-Model}.  In  SO-PoR, unlike the traditional PoR, a client may not be available every time  verification is needed. Therefore, it wants to  delegate  a set of verifications that it cannot carry out itself. In this setting, it (in addition to file retrievability)  must have three guarantees: (a) \emph{verification correctness}: every verification is performed honestly, so  the client can rely on the verification result  without the need to re-do it, (b) \emph{real-time detection}: the client is notified in almost real-time when server's  proof is rejected, and (c) \emph{fair payment}: in every verification, the server is paid only if the server's  proof  is accepted. In SO-PoR, three parties are involved: an honest client, potentially malicious server  and a standard smart contract. SO-PoR also allows a client to perform the verification itself, analogous to the traditional  PoR, when it is available. 
+
+%To satisfy the aforementioned requirements, and keep verifications' cost low, SO-PoR mainly utilises a smart contract (for verification and payment) and the chained time-lock puzzle to eventually release secret values used to: (a) generate challenges and (b) verify proofs. Therefore, i
+
+
+\begin{definition}
+A Smart Outsourced PoR (SO-PoR) scheme consists of seven algorithms ($\mathtt{Setup}, \mathtt{Store},$ $ \mathtt {SolvPuz}, $ $ \mathtt{GenChall}, \mathtt{Prove},$ $ \mathtt{Verify},  \mathtt{Pay}$) defined below: 
+
+
+\
+\begin{itemize}
+\item[$\bullet$] $\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta, z)\rightarrow (\hat{sk},\hat{pk})$:  a probabilistic algorithm, run by a client.  It  takes as input a security: $1^{\scriptscriptstyle\lambda}$, time parameter: $\Delta$, and the number of verification delegated: $z$. It  outputs a set of  secret and public keys.
+
+\
+
+\item[$\bullet$] $\mathtt{Store}(\hat{sk},\hat{pk}, F,z)\rightarrow ({\bm{F}}, \sigma, \vv{\bm{o}},aux)$: a probabilistic algorithm, run only once by a client. It  takes as  input the secret key: $\hat{sk}$, public key: $\hat{pk}$, a file: $F$, and the number of verifications: $z$ that the client wants to delegate. It outputs an encoded file: ${\bm{F}}$,  a set of tags: $\sigma$, a set of $z$ puzzles: $\vv{\bm{o}}$, and public auxiliary data: $aux$. First three outputs are stored on the server and last output: $aux$, is   stored on a smart contract. 
+
+\
+
+\item[$\bullet$] $\mathtt {SolvPuz}(\hat{pk},\vv{\bm{o}})\rightarrow \vv{\bm{s}}$:  a deterministic algorithm that takes as input the public key: $\hat{pk}$ and puzzle vector: $\vv{\bm{o}}$.  It for each  $j\text{\small{-th}}$ verification outputs a  pair: $\ddot{s}_{\scriptscriptstyle j}:(v_{\scriptscriptstyle j},l_{\scriptscriptstyle j})$ of solutions, where $v_{\scriptscriptstyle j}$ and $l_{\scriptscriptstyle j}$ are outputted at time $t_{\scriptscriptstyle j}$ and $t'_{\scriptscriptstyle j}$ respectively and $t'_{\scriptscriptstyle j}> t_{\scriptscriptstyle j}$. Therefore, the algorithm in total outputs $z$ pairs. Value $l_{\scriptscriptstyle j}$ is sent  to the smart contract right after it is discovered. This algorithm is run  by the server.
+
+\
+
+
+\item[$\bullet$] $\mathtt{GenChall}(j,|{\bm{F}}|, 1^{\scriptscriptstyle\lambda},\ddot{s}_{\scriptscriptstyle j},aux)\rightarrow \vv{\bm{c}}$: a probabilistic algorithm that takes as input a verification index: $j$, the encoded file size: $|{\bm{F}}|$, security parameter: $1^{\scriptscriptstyle\lambda}$, first component of the related solution pair, $v_{\scriptscriptstyle j}\in \ddot{s}_{\scriptscriptstyle j}$, and public parameters: $pp\in aux$ containing  a blockchain and its parameters. It outputs pairs $\ddot{c}_{\scriptscriptstyle j} : (x_{\scriptscriptstyle j} , y_{\scriptscriptstyle j} )$, where each pair includes a pseudorandom  block's index:  $x_{\scriptscriptstyle j}$ and random coefficient: $y_{\scriptscriptstyle j}$. Also, values $x_{\scriptscriptstyle j}$ are derived from $v_{\scriptscriptstyle j}$ while $y_{\scriptscriptstyle j}$ are derived from $pp$. This algorithm is run by the server for each verification. 
+
+
+%$pp$ is a public parameters for the beacon and it includes, blockchain, chain quality, and index. $\mathtt{GenCoeffs}()$ is called here
+
+\
+
+\item[$\bullet$] $\mathtt{Prove}(j,{\bm{F}}, \sigma,  \vv{\bm{c}})\rightarrow \pi$: a probabilistic algorithm that takes the verification index $j$, encoded file: ${\bm{F}}$ , (a subset of) tags: $\sigma$, and a vector of unpredictable challenges: $\vv{\bm{c}}$, as inputs and outputs a proof of  file retrievability. It is run by the server for each verification.
+
+\
+
+\item[$\bullet$] $\mathtt{Verify}(j,\pi,\ddot{s}_{\scriptscriptstyle j},aux)\rightarrow d:\{0,1\}$: a deterministic algorithm that takes the verification index $j$, proof: $\pi$,  second component of the related solution pair: $l_{\scriptscriptstyle j}\in \ddot{s}_{\scriptscriptstyle j}$, and public auxiliary data: $aux$.  If the proof is accepted, it outputs $d=1$; otherwise, outputs $d=0$. The default value of $d$ is $0$. This algorithm is run by the smart contract for each verification and invoked only once for each verification by only the server. 
+
+\
+
+\item[$\bullet$] $\mathtt{Pay}(j,d)\rightarrow d'=\{0,1\}$: a deterministic algorithm that takes the verification index $j$, the verification output: $d$. If $d=1$, it transfers $e$ amounts to the server and outputs $1$. Otherwise, it does not transfer anything, and outputs $0$. The default value of $d'$ is $0$. The algorithm is run by the  contract, and  invoked only by $\mathtt{Verify}(.)$. 
+\end{itemize}
+\end{definition}
+
+
+
+
+
+%
+%note that in the above, $\mathtt{Store}$ is a wrapper function that calls $\mathtt{GenPuz}(\vv{\bm{m}},\hat{sk},\hat{pk})$ and $\mathtt{Store}(\hat{sk},F)$ as subroutine,{\color{blue}xx explain what $\vv{\bm{m}}$ is for}
+%
+
+
+
+
+  
+A SO-PoR scheme must satisfy two main properties: \emph{correctness} and \emph{soundness}. The correctness requires, for any: file, public-private key pairs, and puzzle solutions, both the verification  and pay algorithms, i.e. $\mathtt{Verify}(.)$ and $\mathtt{Pay}(.)$, output $1$ when interacting with  the  prover, verifier, and client  all of which are honest.  The soundness however is split into four properties: extractability, verification correctness, real-time detection, and fair payment, formally defined below.  Before we define the first property,  extractability, we provide the following  experiment between an environment: $\mathcal{E}$ and  adversary: $\mathcal{A}$ who corrupts $C\subsetneq\{\mathcal{S},\mathcal{M}_{\scriptscriptstyle 1},...,\mathcal{M}_{\scriptscriptstyle\beta}\}$, where $\beta$ is the maximum number of miners which can be corrupted in a secure blockchain. In this game, $\mathcal{A}$ plays the role of corrupt parties and $\mathcal{E}$ simulating an honest party's role. 
+
+
+\begin{enumerate}
+\item $\mathcal{E}$ executes $\mathtt{Setup}(.)$ algorithm and provides public key: $\hat{pk}$, to $\mathcal{A}$.   
+\item $\mathcal{A}$ can pick  arbitrary file $F'$, and  uses it to make queries to  $\mathcal{E}$ to run:  $\mathtt{Store}(\hat{sk},\hat{pk},$ $ F',z)$ $\rightarrow (F'^{\scriptscriptstyle *}, \sigma, \vv{\bm{o}},aux)$  and return the output to $\mathcal{A}$. Also, upon receiving the output of $\mathtt{Store}()$, $\mathcal{A}$ can locally run  algorithms: $\mathtt {SolvPuz}(\hat{pk},\vv{\bm{o}})$ and   $\mathtt{GenChall}(j,$ $|F'^{\scriptscriptstyle *}|, $ $ 1^{\scriptscriptstyle\lambda},\ddot{s}_{\scriptscriptstyle j},aux)\rightarrow \vv{\bm{c}}$ as well as  $\mathtt{Prove}(j,F^{\scriptscriptstyle *}, \sigma, $ $ \vv{\bm{c}})\rightarrow \pi$,  to get their outputs as well. 
+\item $\mathcal{A}$ can request $\mathcal{E}$ the execution of $\mathtt{Verify}(j,\pi,\ddot{s}_{\scriptscriptstyle j},aux)$ for any $F'$ used to query $\mathtt{Store}()$. Accordingly, $\mathcal{E}$ informs  $\mathcal{A}$ about the verification output. The adversary can send a polynomial number of queries to $\mathcal{E}$. Finally, $\mathcal{A}$ outputs the description of a prover: $\mathcal{A}'$ for any file it has already chosen above. 
+\end{enumerate}
+
+It is said a cheating prover: $\mathcal{A}'$ is $\epsilon$-admissible if it convincingly answers $\epsilon$ fraction of verification challenges \cite{DBLP:conf/asiacrypt/ShachamW08}. Informally, a SO-PoR scheme supports extractability, if there is an extractor algorithm: $\mathtt{Ext}(\hat{sk},\hat{pk},\mathtt{P}')$, that takes the secret-public keys and the description of the  machine implementing the prover's role: $\mathcal{A}'$ and outputs the file: $F'$. The extractor can reset the adversary to the beginning of the challenge phase and repeat this step polynomially many times for  of extraction, i.e. the extractor can rewind it.
+
+\begin{definition}[$\epsilon$-extractable]\label{extractable} A SO-PoR scheme is $\epsilon$-extractable if  for every adversary: $\mathcal{A}$ who corrupts $C\subsetneq\{\mathcal{S},\mathcal{M}_{\scriptscriptstyle 1} $ $,..., \mathcal{M}_{\scriptscriptstyle\beta}\}$, plays the experiment above, and outputs an $\epsilon$-admissible cheating prover: $\mathcal{A}'$ for a file $F'$,  there exists an extraction algorithm that recovers $F'$ from $\mathcal{A}'$, given honest parties public-private keys and $\mathcal{A}'$,  i.e. $\mathtt{Ext}(\hat{sk},\hat{pk},\mathcal{A}')\rightarrow F'$, except with a negligible probability. 
+\end{definition}
+
+% . The extractor has the ability to reset the adversary to the beginning of the challenge phase and repeat this step polynomially many times for the purpose of extraction
+
+In the above game, the environment, acting on honest parties' behalf, performs the verification correctly; which is not always the case in SO-PoR. As the verification can be run by miners a subset of which are potentially corrupted. Even in this case, the verification correctness must hold, e.g.  if a corrupt server sends an  invalid proof then even if $\beta-1$ miners are corrupt (and colluding with it) the verification function will not output $1$ and if the server is honest and submits a valid proof then the verification function does not output $0$ even if $\beta$ miners are corrupt, except with a negligible probability. This is formalised below. 
+
+
+\begin{definition}[Verification Correctness]\label{Verification-Correctness} Let $\beta$ be the maximum number of miners that can be corrupted in a secure blockchain network and $\lambda'$ be the blockchain security parameter. Also, let $\mathcal{A}$ be the adversary who (plays the above game and) corrupts parties in either $C\subseteq\{\mathcal{S},\mathcal{M}_{\scriptscriptstyle 1},...,\mathcal{M}_{\scriptscriptstyle\beta-1}\}$ or $C'\subseteq\{\mathcal{M}_{\scriptscriptstyle 1},...,\mathcal{M}_{\scriptscriptstyle\beta}\}$.  In SO-PoR, we say the correctness of $j\text{\small-th}$ verification  is guaranteed if: 
+ 
+$$\begin{array}{l}
+\text{in the former case}: Pr[\mathtt{Verify}_{\scriptscriptstyle C}(j,\pi,\ddot{s}_{\scriptscriptstyle j},aux)=1]\leq \mu(\lambda')\\
+\text{in the latter case}: Pr[\mathtt{Verify}_{\scriptscriptstyle C'}(j,\pi,\ddot{s}_{\scriptscriptstyle j},aux)=0]\leq \mu(\lambda')
+\end{array}$$
+where $\mu(.)$ is a negligible function. 
+\end{definition}
+
+Also, a client needs to have a guarantee that for each verification it can get a correct result within a (fixed) time period. 
+
+\begin{definition}[$\Upsilon$-real-time Detection]\label{real-time Detection} Let $\mathcal{A}$, as defined above, be the adversary who corrupts either $C$ or $C'$.
+A client, for each $j\text{\small{-th}}$ delegated verification, will get a correct output of  $\mathtt{Verify(.)}$, by  means of reading a blockchain, within time window $\Upsilon$, after the time when the server is supposed to send  its proof  to the blockchain network. Formally,
+
+$$\mathtt{Read}(\Upsilon,\mathtt{Verify}_{\scriptscriptstyle D}(j,\pi,\ddot{s}_{\scriptscriptstyle j},aux))\rightarrow \{0,1\}$$
+where $D\subsetneq\{C,C'\}$, except with a negligible probability. 
+\end{definition}
+
+
+
+
+
+\begin{definition}[Fair Payment]\label{Fair-Payment}  SO-PoR supports a fair payment if the client and server fairness are satisfied: 
+
+\begin{itemize}
+\item[$\bullet$] \textit{\textbf{Client Fairness}}: An honest client is guaranteed that it only pays ($e$ coins) if the server provides an accepting proof, except with a negligible probability. 
+\item[$\bullet$]\textit{\textbf{Server Fairness}}: An honest server is guaranteed that the client gets a correct proof if the client pays ($e$ coins),   except with a negligible probability. 
+\end{itemize}
+Formally, let $\mathcal{A}$ be the adversary who corrupts either $C$ or $C'$, as defined above. To satisfy a fair payment:
+\begin{equation}
+Pr[\mathtt{Pay}_{\scriptscriptstyle D}(.)=b 	\cap  \mathtt{Verify}_{\scriptscriptstyle D}(.)=b]\geq 1-\mu(\lambda'),   
+\end{equation}
+
+the following inequality must hold:
+\begin{equation}\label{inequ::fair-payment}
+Pr[\mathtt{Pay}_{\scriptscriptstyle D}(.)=b' 	\cap \mathtt{Verify}_{\scriptscriptstyle D}(.)=b] \leq \mu(\lambda'),
+\end{equation}
+where $D\subsetneq\{C,C'\},b\neq b'$, and $b, b'\subsetneq\{0,1\}$
+
+
+
+
+
+
+
+
+
+%\begin{equation}
+%Pr[\mathtt{Pay}_{\scriptscriptstyle D}(.)=1 	\cap \mathtt{Verify}_{\scriptscriptstyle D}(.)=0] \leq \mu(\lambda')
+%\end{equation}
+%\begin{equation}
+%Pr[ \mathtt{Pay}_{\scriptscriptstyle D}(.)=0 	\cap \mathtt{Verify}_{\scriptscriptstyle D}(.)=1] \leq \mu(\lambda')
+%\end{equation}
+%\begin{equation}
+%Pr[\mathtt{Pay}_{\scriptscriptstyle D}(.)=1 	\cap  \mathtt{Verify}_{\scriptscriptstyle D}(.)=1]\geq 1-\mu(\lambda')
+%\end{equation}
+%where $D\subsetneq\{C,C'\}$
+\end{definition}
+
+The above definition also takes into account the fact that the client at the time of delegated verification is not necessarily available to make the payment itself, so the payment is delegated to a third party, e.g. a smart contract. In this case, the definition  ensures that even if  the client or/and server are honest, the third party cannot affect  the fairness (except with a negligible probability).
+
+% Moreover, it is not hard to see, if the inequality \ref{} holds, then the fairness is guaranteed, with a high probability:  \begin{equation*}
+%Pr[\mathtt{Pay}_{\scriptscriptstyle D}(.)=b 	\cap  \mathtt{Verify}_{\scriptscriptstyle D}(.)=b]\geq 1-\mu(\lambda')
+%\end{equation*} 
+
+
+%In the following we explain the rational behind the above definition. In SO-PoR scheme, for each verification, the server sells  a proof: $\pi$ to a client and earns  $e$ coins if and only if the proof is accepted, i.e. $\mathtt{Verify}(.)=1$. In SO-PoR setting, the client at the time of delegated verification is not necessarily online to make the payment itself, so it is done by a third party (e.g. a smart contract). The definition must ensure that   even if both server and client are honest, the third party cannot affect  the fairness. 
+
+
+\begin{definition}[SO-PoR Security]\label{SO-PoR-Security} A SO-PoR scheme is secure if it is $\epsilon$-extractable, and satisfies verification correctness, $\Upsilon$-real-time detection, and fair payment properties.
+
+\end{definition}
+
+
+
+
+\begin{remark}
+The folklore assumption is that (in a secure blockchain) a smart contract function \emph{always outputs a correct result}. However, this is not the case and it may fail under certain circumstances.  For instance, as shown in \cite{LuuTKS15} all rational  miners may not verify a certain transaction. As another example,  an adversary (although with a negligibly small probability)  discards a  certain honestly generated blocks,  reverses the state of blockchain and contract, or breaks a client's signature scheme.  Accordingly, in our definitions above, we take such cases  into consideration and allow the possibility that a function outputs an incorrect result even though with a negligibly small probability. 
+\end{remark}
+
+
+
+
+\begin{remark}
+SO-PoR model differs from traditional (e.g. \cite{DBLP:conf/ccs/JuelsK07,DBLP:conf/asiacrypt/ShachamW08}) and outsourced PoR  (e.g. \cite{armknecht2014outsourced,xu2016lightweight}) models in several aspects. Only  the SO-PoR model offers all the properties. In particular,  traditional PoRs only offer extractability while outsourced ones  offer liability as well, that allows a client (by re-running all verifications function) to detect a verifier if it provides an incorrect verification output, so the client   cannot rely on the verification result provided.  As another difference, the SO-PoR model  takes into account the case where an adversary can corrupt both the server and some miners at the same time.
+\end{remark}
+
+\begin{remark}
+SO-PoR should also support  the traditional PoR where only client and server interact with each other  (e.g. client generates challenges, and verifies proof) when the client is available. To let SO-PoR definition support that too, we can simply define a flag: $\xi$, in each function, such that  when $\xi=1$, it acts as the traditional PoR; otherwise (when $\xi=0$), it performs as a delegated one. For the sake of simplicity, we let the flag  be implicit in the definitions above, where the default  is  $\xi=1$ 
+\end{remark}

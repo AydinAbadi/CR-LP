@@ -1,0 +1,37 @@
+% !TEX root =S-PoR.tex
+
+\subsection{Time-lock Puzzles}
+
+The idea to send information into the \emph{future}, i.e.
+time-lock puzzle/encryption, was first put forth by Timothy C. May. A time-lock puzzle allows a party to encrypt a message such that it cannot be decrypted  until a certain amount of time has passed. In general,  a  time-lock scheme should allow  that generating (and verifying) a puzzle to take less time than solving it. The time-lock puzzle scheme that May proposed lies on a trusted agent. Later on, Rivest \textit{et al} \cite{Rivest:1996:TPT:888615} propose a protocol that does not require a trusted agent, and is secure against a receiver
+who may have access to many  computation resources that can be run in parallel. It is based on Blum-Blum-Shub pseudorandom number generator that relies on modular repeated squaring, believed to be sequential. The scheme in \cite{Rivest:1996:TPT:888615} allows (only) the puzzle creator to  verify the correctness of the puzzle solution using a secret key and the original secret message.  This scheme has been the core of (almost) all later time-lock puzzles schemes that supports encapsulation of an arbitrary message. Later on, \cite{BonehN00,DBLP:conf/fc/GarayJ02} proposed timed commitment schemes that offer more security properties, in the sense that they   allow a puzzle generator to prove (in Zero-knowledge) to a puzzle solver that the correct solution (e.g. a signature of a public document) will be recovered after a certain time, before the solver starts solving the puzzle. These schemes are more complex, due to the use of zero-knowledge proofs, and less efficient than \cite{Rivest:1996:TPT:888615}.    Very recently, \cite{MalavoltaT19,BrakerskiDGM19}  propose protocols for homomorphic time-lock puzzles, where an arbitrary function can be run over puzzles before they are solved. The schemes mainly use  fully homomorphic encryption and   the RSA puzzle, proposed in \cite{BrakerskiDGM19}, in the nutshell. The main difference between the two protocols is the security assumption they rely on (i.e. the former uses a non-standard assumption while the latter relies on a standard one). Since both schemes use a generic fully homomorphic encryption, it is not hard to make them publicly verifiable. Both protocols  are only of theoretical interest as in practice they impose  high computation and communication costs, due to the use of fully homomorphic encryptions.
+
+
+%Furthermore, \cite{KarameC10} proposes a privately verifiable puzzle scheme that has up to $12\times$  lower cost than \cite{Rivest:1996:TPT:888615} in puzzle generation and verification phases. However,  it relies on  a new and non-standard assumption (i.e. computationally infeasible to compute a small private exponent when a public exponent is much larger than the RSA modulus).
+
+
+
+We also cover two related but different notions, pricing puzzles and verifiable delay functions. 
+
+\noindent\textbf{\textit{Pricing Puzzles.}} Also known as \emph{client puzzles}. It was first put forth by Dwork \textit{et al.} \cite{DworkN92} who defined it as a function that requires a certain amount of computation resources to solve a puzzle.  In general, the pricing puzzles are based on either hash inversion problems or number theoretic. In the former category, 
+a puzzle generator  generates a puzzle as: $h= \mathtt{H}(m||r)$, where $\mathtt{H}$ is a hash function, $m$ is a public value and $r$ is a random value of a fixed size. Given $h, \mathtt{H}$ and $m$, the solver must find $r$ such that the above equation holds. The size of $r$ is picked in such a way that the expected time to find the solution is fixed (however it does not rule out finding the solution on the first attempt). The above hash-based scheme allows a solver to find a solution faster if it has more computational power resources  running in parallel. The application area of such puzzle includes  defending against denial-of-service (DoS)  attacks, reaching a consensus in cryptocurrencies, etc. A  variant  of such a puzzle uses iterative hashing; for instance, to generate a set of puzzles  in the case where the solver receives a service proportional to the number of puzzles it solves \cite{groza2006chained},  or to generate password puzzle to mitigate DoS attacks \cite{Ma05}. However, the iterative hashing schemes are partially parallelizable, in the sense that each single invocation of the hash function can be run in parallel. Later on,  \cite{MahmoodyMV11} investigates the possibility of constructing (time-lock) puzzles in the random oracle model.  Their main result was negative, that rules out time-lock puzzles that require more parallel time to solve than the total work required to generate.  Also \cite{MahmoodyMV11} proposes an iterative hash-based mechanism (very similar to \cite{Ma05}) that allows a puzzle generator to generate a puzzle with $n$ parallel queries to the random oracle, but the solver needs $n$ rounds of serial queries. Nevertheless, this scheme is also partially parallelizable, as each instance of the puzzle can be solved in parallel. Note that the above hash-based puzzle schemes would have very limited applications if they are used directly to  encapsulate a message: $m'$ of arbitrary size. The reason is that, in these schemes,  the solution  size: $|r|$ plays a vital role in (adjusting) the  time taken to solve the puzzle. If the solution size becomes bigger, as a result of combining $r$ with $m'$, i.e. $r \odot m'$, then it would take longer to find the solution. This means  the puzzles can be used only in the cases where  the time required to find a solution is long enough, and is a function of $|r \odot m'|$, which seriously restricts its application. Researchers also propose non-parallelizable pricing puzzles based on number theoretic \cite{WatersJHF04,KuppusamyRSBN12,KarameC10} whose main application is to resist DoS attacks. These schemes  have a more efficient verification mechanism than the one proposed in \cite{Rivest:1996:TPT:888615}. But, they are only privately verifiable and not designed to encapsulate an arbitrary message. 
+
+
+
+
+
+\noindent\textbf{\textit{Verifiable Delay Function (VDF).}} Allows a prover to provide a publicly verifiable proof stating  it has performed  a pre-determined number of sequential computations. It has many applications, e.g. in decentralised systems to extract  trustworthy public randomness from a blockchain. VDF first formalised by Boneh \textit{et al} in \cite{BonehBBF18} that proposed several VDF constructions based on SNARKs along with either  incrementally verifiable computation or injective polynomials, or based on time-lock puzzles, where  the SNARKs based approaches require a trusted setup.  Later on,  \cite{Wesolowski19} improved the pervious VDFs  from different perspectives and proposed a scheme  based on RSA time-lock encryption, in the random oracle model. To date, this protocol is the most efficient VDF.  It also supports batch verification, such that given a single proof a verifier can efficiently check the validity of multiple outputs of the verifiable delay function. As discussed above, (most of) VDF schemes are built  upon time-lock puzzles, however the converse is not necessarily the case, as VDFs are not designed to encapsulate an  arbitrary private message, and they take a public message as input while time-lock puzzles are designed to conceal a private input message. 
+
+
+%BonehBBF18,Wesolowski19
+
+
+
+
+
+
+
+
+
+
+

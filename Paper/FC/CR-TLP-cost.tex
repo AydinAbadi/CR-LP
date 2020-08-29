@@ -1,0 +1,92 @@
+% !TEX root =main.tex
+
+
+
+ 
+ \section{Asymptotic Cost Analysis of C-TLP}\label{TLP-cost-compare}
+ 
+ In this section, we analyse  the communication and computation complexity of C-TLP. We consider a generic setting where the protocol deals with $z$ puzzles. %Table \ref{table::puzzle-com} summarises the  results.
+ 
+% \begin{table*}[!htbp]
+%\begin{footnotesize}
+%
+%\begin{center}
+%\caption{ \small C-TLP's Detailed Cost Breakdown}\label{table::puzzle-com} 
+%
+%\renewcommand{\arraystretch}{.95}
+%\scalebox{0.94}{
+%\begin{subtable}{.58\linewidth}%xxxx
+%\begin{minipage}{.88\linewidth}
+%\caption{\small Computation Cost}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+%   \hline
+%\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9} &
+% \multicolumn{3}{c|}{\cellcolor[gray]{0.9}\scriptsize \underline{ \ \ \ \  \ \ \ \ \ Protocol Function \ \ \ \ \ \ \ \ \ }}&\cellcolor[gray]{0.9}\\
+% %\cline{3-5}
+%\cellcolor[gray]{0.9} \multirow{-2}{*}{\scriptsize Protocol}&\cellcolor[gray]{0.9} \multirow{-2}{*} {\scriptsize Operation}&\cellcolor[gray]{0.9}\scriptsize$\mathtt{GenPuz}$&\cellcolor[gray]{0.9}\scriptsize$\mathtt{SolvPuz}$&\cellcolor[gray]{0.9}\scriptsize$\mathtt{Verify}$&\multirow{-2}{*} {\cellcolor[gray]{0.9}\scriptsize   Complexity} \\
+%\hline
+%\cellcolor[gray]{0.9} &\multirow{3}{*}{\rotatebox[origin=c]{0}{\scriptsize }} \cellcolor[gray]{0.9}\scriptsize Exp.&\scriptsize$z+1$&\scriptsize$T z$ &$-$&\multirow{4}{*}{\rotatebox[origin=c]{0}{\scriptsize $O(T  z)$}}\\
+%     \cline{2-5}  
+% \cellcolor[gray]{0.9}     &\cellcolor[gray]{0.9}\scriptsize Add. or Mul.&\scriptsize$z$ &\scriptsize$z$&$-$ & \\
+%     \cline{2-5} 
+% \cellcolor[gray]{0.9}         &\cellcolor[gray]{0.9}\scriptsize Commitment&\scriptsize$z$&$-$ &\scriptsize$z$&\\
+%     \cline{2-5} 
+%\cellcolor[gray]{0.9}   \multirow{-4}{*}{\rotatebox[origin=c]{0}{\scriptsize  C-TLP }}     &\cellcolor[gray]{0.9}\scriptsize Sym. Enc&\scriptsize$z$&\scriptsize$z$ &$-$&\\
+%    % \hline 
+%     
+%      %\hline
+%%\cellcolor[gray]{0.9}  &\cellcolor[gray]{0.9}\multirow{3}{*}{\rotatebox[origin=c]{0}{\scriptsize }}\scriptsize Exp.&\scriptsize$z+1$&\scriptsize$ T \sum\limits_{\scriptscriptstyle j=1}^{\scriptscriptstyle z}j$&\scriptsize$z+1$&\multirow{3}{*}{\rotatebox[origin=c]{0}{\scriptsize $O(T \sum\limits_{\scriptscriptstyle j=1}^{\scriptscriptstyle z}j)$ }}\\
+%%     \cline{2-5}
+%% \cellcolor[gray]{0.9}   &\cellcolor[gray]{0.9}\scriptsize Add. or Mul.&\scriptsize$z-1$&\scriptsize$z$&\scriptsize$z-1$&\\   
+%%      \cline{2-5}  
+%      
+%%\cellcolor[gray]{0.9}   \multirow{-3}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{Rivest:1996:TPT:888615}}}&\cellcolor[gray]{0.9}\scriptsize Sym. Enc. &\scriptsize$z$&\scriptsize$z$&$-$& \\
+%%   \cline{3-6}
+%%   \cline{4-6}
+% \hline
+%\end{tabular}
+%\end{minipage}%******
+%\end{subtable}%xxxx
+%%\renewcommand{\arraystretch}{.8}
+%\begin{subtable}{.38\linewidth}%xxxx
+%\renewcommand{\arraystretch}{1.88}
+%\begin{minipage}{.9\linewidth}
+%\caption{\small Communication Cost (in bit)}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+%   \hline
+% {\cellcolor[gray]{0.9}\scriptsize Protocol}&{\cellcolor[gray]{0.9}\scriptsize Model}&
+%{\cellcolor[gray]{0.9}\scriptsize Client}&{\cellcolor[gray]{0.9}\scriptsize Server}&{\cellcolor[gray]{0.9}\scriptsize  Complexity}\\
+% \cline{3-4}
+%
+%\hline
+% \cellcolor[gray]{0.9}  &\cellcolor[gray]{0.9} \multirow{2}{*}{\rotatebox[origin=c]{0}}\scriptsize Standard&\scriptsize$3200 z$&\scriptsize$1524 z$ &\multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize $O(z)$ }}\\
+%     \cline{2-4}  
+%  \multirow{-2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{0.9} \scriptsize  C-TLP }}&\cellcolor[gray]{0.9}\scriptsize R.O.&\scriptsize$2432  z$ &\scriptsize$628  z$& \\
+%%     \cline{2-4} 
+%%         
+%%      \hline
+%%{\cellcolor[gray]{0.9}\scriptsize\cite{Rivest:1996:TPT:888615}}&\cellcolor[gray]{0.9}\scriptsize Standard&\scriptsize$2176 z$&\scriptsize$2548 z$&{\scriptsize$O(z)$ }\\
+%%     \cline{2-5}
+%    
+% \hline
+%\end{tabular}
+%\end{minipage}%******
+%\end{subtable}%xxxx
+%}
+%\end{center}
+%\end{footnotesize}
+%\end{table*}
+
+ 
+
+ \noindent\textbf{\textit{Computation Complexity}}. For a client to generate $z$ puzzles, in total: in step \ref{call-RTLP-Setup}, it performs one exponentiation over $\bmod \phi(N)$. In step \ref{call-RTLP-GenPuz}, it $z$ times calls $\mathtt{TLP.GenPuZ}(.)$. This  in total involves $z$ symmetric key-based encryption,  $z$ modular exponentiations over $\mathbb{Z}_{\scriptscriptstyle N}$ and $z$ modular additions. Also, in  step \ref{commit-} it performs $z$ invocations of a commitment scheme (to commit), i.e. if a hash-based commitment is used then it would involve $z$ invocations of a hash function, and if Pedersen commitment is used then it would involve $2 z$ exponentiations and $z$ multiplications, where  all operations, in the latter commitment,  are done  over a $\bmod q$ for a large prime number: $q$, e.g. $|q|=1024$-bit. Thus, the overall computation complexity of the client   is $O(z)$. For the server to solve $z$ puzzles, it $z$ times calls $\mathtt{TLP.SolvPuz}(.)$. This in total involves $Tz$ modular squaring over $\mathbb{Z}_{\scriptscriptstyle N}$, $z$ modular additions over $\mathbb{Z}_{\scriptscriptstyle N}$, and  $z$ symmetric key based decryption. The server's cost of proving, in step \ref{prove-}, is very low, as it involves only parsing $z$ strings. Therefore, the server total computation complexity is $O(Tz)$. The verification cost, in step \ref{verify-}, only involves $z$ invocation of commitment scheme (to verify  each opening) and it is \emph{independent} of the RSA security parameters.  If the hash-based commitment is used, then it would involve $z$ invocations of a hash function,  if Pedersen commitment is utilised, then in total it would involve $2 z$ exponentiations and $z$ multiplications performed over $\bmod q$. Thus, the  verification's complexity is $O(z)$.
+
+
+
+
+ 
+ 
+ \noindent\textbf{\textit{Communication Complexity}}.  In step \ref{Generate-Puzzle}, the client publishes two vectors: $\vv{\bm{o}}$ and $\vv{\bm{h}}$, with  $2 z$ and $z$ elements respectively.  Each element of $\vv{\bm{o}}$ is a pair $(o_{\scriptscriptstyle j,1},o_{\scriptscriptstyle j,2})$, where $o_{\scriptscriptstyle j,1}$ is an output of symmetric key encryption, e.g.   $|o_{\scriptscriptstyle j,1}|=128$-bit, and $o_{\scriptscriptstyle j,2}$ is an element of $\mathbb{Z}_{\scriptscriptstyle N}$, e.g.  $|o_{\scriptscriptstyle j,2}|=2048$-bit. Also, each element $h_{\scriptscriptstyle j}$ of $\vv{\bm{h}}$ is either an output of a hash function, when a hash-based commitment is used, e.g.  $|h_{\scriptscriptstyle j}|=256$-bit, or an element of $\mathbb{F}_{\scriptscriptstyle q}$ when Pedersen commitment is used, e.g.  $|h_{\scriptscriptstyle j}|=1024$-bit. Therefore, its total bandwidth is about $2432 z$ bits when the former,  or $3200 z$ bits when the latter commitment scheme is utilised. Also, its   complexity is $O(z)$. Note,  in  C-TLP, when a server finds a solution, it does not broadcast anything, instead it moves on  to the next step:  $\mathtt{Prove}(.)$. For the server to prove, in step \ref{prove-},  in total,  it sends $z$ pairs $(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$ to the verifier, where $m_{\scriptscriptstyle j}$  is an arbitrary message, e.g.  $|m_{\scriptscriptstyle j}|=500$-bit, and  $d_{\scriptscriptstyle j}$ is either a long enough random value, e.g. $|d_{\scriptscriptstyle j}|=128$-bit, when the hash-based commitment is used, or an element of $\mathbb{F}_{\scriptscriptstyle q}$ when Pedersen scheme is used, e.g. $|d_{\scriptscriptstyle j}|=1024$-bit. Therefore, its bandwidth is about either $628 z$ or $1524 z$ bits when the former or latter commitment scheme is used respectively. The solver's  communication complexity is $O(z)$. 
+ 
+
+ 

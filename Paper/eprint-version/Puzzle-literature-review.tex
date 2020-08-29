@@ -1,0 +1,37 @@
+% !TEX root =main.tex
+
+%\subsection{Time-lock Puzzles}
+
+\
+
+\noindent\textbf{Time-lock Puzzles}
+The idea to send information into the \emph{future}, i.e.
+time-lock puzzle/encryption, was first put forth by Timothy C. May. A time-lock puzzle allows a party to encrypt a message such that it cannot be decrypted  until a certain  time has passed. In general,  a  time-lock scheme should allow   generating (and verifying) a puzzle to take less time than solving it. The  scheme that May proposed lies on a trusted agent. Later, Rivest \textit{et al} \cite{Rivest:1996:TPT:888615} propose an RSA-based puzzle scheme that does not require a trusted agent, and is secure against a receiver
+who may have access to many  computation resources that run in parallel. The latter protocol has been the core of (almost) all later time-lock puzzle schemes that supports the encapsulation of an arbitrary message. Later, \cite{BonehN00,DBLP:conf/fc/GarayJ02} proposed a scheme which also let a puzzle generator  prove (in Zero-knowledge)  to a puzzle solver that the correct solution  will be recovered after a certain time.    Recently, \cite{MalavoltaT19,BrakerskiDGM19}  propose  homomorphic time-lock puzzles, where an arbitrary function can be run over puzzles before they are solved. In the protocols, all puzzles have an identical time parameter, and their solutions are supposed to be discovered at the same time. They  are based on the RSA-based puzzle  and   fully homomorphic encryption which is computationally expensive.
+
+
+
+
+%%Two related but different notions are pricing puzzles and verifiable delay functions. 
+%%
+%%\noindent\textbf{\text{Pricing Puzzles.}} Also known as \emph{client puzzles}. It was first put forth by Dwork \textit{et al.} \cite{DworkN92} who defined it as a function that requires a certain amount of computation resources to solve a puzzle.  In general,  pricing puzzles are based on either hash inversion problems publicly verifiable, e.g.  \cite{DworkN92,groza2006chained}, or number-theoretic privately verifiable, e.g.  \cite{KuppusamyRSBN12,KarameC10}. The application area of such puzzles includes  defending against denial-of-service (DoS)  attacks and reaching a consensus in cryptocurrencies. However, unlike time-lock puzzles, pricing puzzles are not designed to encapsulate an arbitrary message. 
+%%
+%%
+%%
+%%
+%%
+%%\noindent\textbf{\text{Verifiable Delay Function (VDF).}} Allows a prover to provide a publicly verifiable proof stating  it has performed  a pre-determined number of sequential computations. VDF was first formalised by Boneh \textit{et al} in \cite{BonehBBF18} that proposed several VDF constructions. Later on,  \cite{Wesolowski19} improved the previous VDF's  from different perspectives and proposed a scheme  based on RSA time-lock encryption, in the random oracle model. To date, this protocol is the most efficient VDF.  Most of VDF schemes are built  upon time-lock puzzles, however the converse is not necessarily the case, as VDF's are not designed to conceal an  arbitrary private message, and they take a public message as input while time-lock puzzles are designed to conceal a private input message. 
+
+
+%BonehBBF18,Wesolowski19
+
+
+
+%\vspace{-2mm}
+
+
+
+
+
+
+

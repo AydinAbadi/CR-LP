@@ -1,0 +1,197 @@
+% !TEX root =main.tex
+
+
+ \begin{table*}[!htbp]
+
+\caption{ \small O-PoR's Costs  Comparison. In the table, $z$ is the total number of verifications, $c$ is the number of challenges for each verification, $n$ is the total number of file blocks, $c'=(0.1)c$,  and $||\bm{F}||$ is a file bit size.} \label{table::O-PoR-Cost} 
+%\begin{footnotesize}
+\begin{center}
+%\renewcommand{\arraystretch}{.93}
+%\scalebox{1}{
+%\begin{subtable}{.56\linewidth}%xxxx
+%\begin{minipage}{1\linewidth}
+%\caption{\small Computation and I/O Costs}
+%\setlength{\tabcolsep}{1pt}%compress the table horizontally
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+
+   \hline
+\cellcolor[gray]{.9}&\cellcolor[gray]{.9}&
+ \multicolumn{4}{c|}{\cellcolor[gray]{.9}\scriptsize \underline{ \  \  \  \  \   \  \    \  \  \  \ \  \  \  \  \  \  \ \  \  \      Computation Cost     \  \  \  \  \   \  \    \  \  \  \ \  \  \  \  \  \  \ \  \  \   }}& \multicolumn{4}{c|}{\cellcolor[gray]{.9}\scriptsize \underline{\  \  \  \  \  \  \ \ \  \  \  \  \  \   \  \  \  \  \  \  \  \  Communication Cost   \  \  \  \  \   \  \    \  \  \  \ \  \  \  \  \  \  \ \  \  \   }}\\
+% \cline{3-6}
+  \cellcolor[gray]{.9}\multirow{-2}{*}{\scriptsize Protocols} &\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize Operation}&\cellcolor[gray]{.9}\scriptsize$\mathtt{Store}$&\cellcolor[gray]{.9}\scriptsize$\mathtt{SolvPuz}$&\cellcolor[gray]{.9}\scriptsize$\mathtt{Prove}$&\cellcolor[gray]{.9}\scriptsize$\mathtt{Verify}$&\cellcolor[gray]{.9} {\scriptsize Client}&\cellcolor[gray]{.9} {\scriptsize Server}&\cellcolor[gray]{.9} {\scriptsize Verifier}&\cellcolor[gray]{.9}{\scriptsize Proof Size}
+  \\
+\hline
+    %SO-PoR 1st row
+\cellcolor[gray]{.9}& \multirow{2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize }} \scriptsize Exp.&\scriptsize$z+1$&\scriptsize$T z$&\scriptsize$-$ &\scriptsize$-$&\scriptsize $128(n+$&&&\\
+     \cline{2-6}  
+     %SO-PoR 2nd row
+ \multirow{-2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize  SO-PoR }}&\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$2(n+cz)$ &\scriptsize$z$&\scriptsize$4 c z$&\scriptsize$2z(1+c)$&\scriptsize  $cz+19z)$&\multirow{-2}{*}{\scriptsize $884z$}&\multirow{-2}{*}{\scriptsize$-$}&\multirow{-2}{*}{\scriptsize $O(1)$}\\
+     \cline{2-6}   
+      
+     \hline 
+       %[3] 1st row 
+       
+          \hline 
+          
+ \cellcolor[gray]{.9}  &\multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize }}\cellcolor[gray]{.9}\scriptsize Exp.&\scriptsize$9 n$&\scriptsize$ -$&\scriptsize$-$&$-$&&\scriptsize$256z+$&\scriptsize $4672n+$&\\
+     \cline{2-6}
+     %[3] 2nd row 
+\cellcolor[gray]{.9}   \multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{armknecht2014outsourced}}}  &\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$10 n$&$-$&\scriptsize$4 z(c+c')$&\scriptsize$z(9c+3)$&\multirow{-2}{*} {\scriptsize $128n$}&\scriptsize $||{\bm{F}}||$&\scriptsize $256z$&\multirow{-2}{*} {\scriptsize $O(1)$}\\   
+      
+      \hline
+      
+       \hline
+      %[53] 1st row
+  \cellcolor[gray]{.9}    &\multirow{2}{*}{\rotatebox[origin=c]{0}{\  \scriptsize }}\cellcolor[gray]{.9}\scriptsize Exp.&\scriptsize$-$&$-$&\scriptsize$z (3+c)$&\scriptsize$6 z$&&&&\\
+     \cline{2-6}
+     %[53] 2nd row
+ \cellcolor[gray]{.9}&\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$4 n$&\scriptsize$-$&\scriptsize$2 z(3 c+4)$&\scriptsize$2 c z$&&&&\\ 
+    \cline{2-6}
+    %[53] 3rd row 
+\cellcolor[gray]{.9}\multirow{-3}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{xu2016lightweight}}}&\cellcolor[gray]{.9}\scriptsize Pairing&\scriptsize$-$&\scriptsize$-$&\scriptsize$7 z$&$-$&\multirow{-3}{*} {\scriptsize $2048n$}&\multirow{-3}{*} {\scriptsize $6144z$}&\multirow{-3}{*} {\scriptsize$-$}&\multirow{-3}{*} {\scriptsize $O(1)$}\\ 
+ \hline
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ \hline
+\cellcolor[gray]{.9}& \multirow{2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize }} \scriptsize Exp.&\scriptsize$-$&\scriptsize$3T z$&\scriptsize$-$ &\scriptsize$3z$&&\scriptsize$128cz \log n+$&&\\
+     \cline{2-6}  
+ \multirow{-2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize  \cite{Storage-Time} }}&\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$-$ &\scriptsize$Tz$&\scriptsize$-$&\scriptsize$-$&\multirow{-2}{*} {\scriptsize $128$}&\scriptsize $4096z$&\multirow{-2}{*} {\scriptsize$-$}&\multirow{-2}{*} {\scriptsize$O(\log n)$} \\
+     \cline{2-6}    
+     \hline 
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ 
+ 
+\end{tabular}  %xxxxxx
+%\end{minipage}
+%\end{center}
+%\end{footnotesize}
+%\end{table*}
+%\end{subtable}
+
+
+%\begin{subtable}{.52\linewidth}%xxxx
+%\renewcommand{\arraystretch}{1.42}
+%
+%\begin{minipage}{.8\linewidth}
+%\caption{\small Communication Cost (in bit)}
+%\setlength{\tabcolsep}{.65pt}%compress the table horizontally
+%
+%\begin{tabular}{|c|c|c|c|c|c|} 
+%   \hline
+% \cellcolor[gray]{.9}\scriptsize Protocols&
+%\cellcolor[gray]{.9}\scriptsize Client&\cellcolor[gray]{.9}\scriptsize Server&\cellcolor[gray]{.9}\scriptsize  Verifier&\cellcolor[gray]{.9}\scriptsize Proof Size\\
+%   \hline
+%   
+%
+%\cellcolor[gray]{.9}&\scriptsize$128 (n+$&\multirow{2}{*} {\scriptsize$884 z$} &\multirow{2}{*} {\scriptsize $-$}&\multirow{2}{*}{\scriptsize$O(1)$}\\  
+%\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize  SO-PoR}&\scriptsize$cz+19 z)$&&&\\
+% \hline  
+% 
+%      \hline   
+%\cellcolor[gray]{.9}& \multirow{2}{*} {\scriptsize$128 n$}&\multirow{2}{*} {\scriptsize$||\vv{\bm{F}}||+256 z$}&\scriptsize$4672 n+$&\multirow{2}{*}{\scriptsize$O(1)$}\\
+%\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize  \cite{armknecht2014outsourced}}&&&\scriptsize$256 z$&\\
+% \hline
+% 
+%      \hline 
+%\cellcolor[gray]{.9}\scriptsize\cite{xu2016lightweight}& \scriptsize$2048 n$&\scriptsize$6144z$&\scriptsize$-$&\scriptsize$O(1)$\\
+% \hline
+% 
+%%%%%%%%%%%%%%%%%%%%
+%
+%
+%      \hline 
+%\cellcolor[gray]{.9}\scriptsize\cite{Storage-Time}& \scriptsize$128$&\scriptsize$(128cz\log n)+4096z$&\scriptsize$-$&\scriptsize$O(\log n)$\\
+% \hline
+%
+%%%%%%%%%%%%%%%%%
+% 
+% 
+%% \end{footnotesize}
+%%\end{center} 
+%\end{tabular}  %xxxxxx
+%\end{minipage}
+%\end{subtable}
+%}
+\end{center}
+%\end{footnotesize}
+\end{table*}
+
+
+
+%--------------------------------------------------------
+
+
+% \begin{table*}[!htbp]
+%\begin{footnotesize}
+%\begin{center}
+%\caption{ \small Outsourced PoR Cost  Comparison} \label{table::O-PoR-Cost} 
+%\renewcommand{\arraystretch}{.80}
+%%\scalebox{1}{
+%%\begin{subtable}{.56\linewidth}%xxxx
+%\begin{minipage}{1\linewidth}
+%\caption{\small Computation and I/O Costs}
+%\setlength{\tabcolsep}{.55pt}%compress the table horizontally
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+%
+%   \hline
+%\cellcolor[gray]{.9}&\cellcolor[gray]{.9}&
+% \multicolumn{4}{c|}{\cellcolor[gray]{.9}\scriptsize \underline{\  \  \  \  \  \  \ \ \  \  \  \  \  \      Algorithms' Computation Cost     \  \  \  \ \  \  \  \  \  \  \ \  \  \   }}&\cellcolor[gray]{.9}&\cellcolor[gray]{.9}&\cellcolor[gray]{.9}&\cellcolor[gray]{.9}&\cellcolor[gray]{.9}\\
+%% \cline{3-6}
+%  \cellcolor[gray]{.9}\multirow{-2}{*}{\scriptsize Protocols} &\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize Operation}&\cellcolor[gray]{.9}\scriptsize$\mathtt{Store}$&\cellcolor[gray]{.9}\scriptsize$\mathtt{SolvPuz}$&\cellcolor[gray]{.9}\scriptsize$\mathtt{Prove}$&\cellcolor[gray]{.9}\scriptsize$\mathtt{Verify}$&\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize I/O Cost}&\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize Client}&\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize Server}&\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize Verifier}&\cellcolor[gray]{.9}\multirow{-2}{*} {\scriptsize Proof Size}
+%  \\
+%\hline
+%    %SO-PoR 1st row
+%\cellcolor[gray]{.9}& \multirow{2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize }} \scriptsize Exp.&\scriptsize$z+1$&\scriptsize$T z$&\scriptsize$-$ &$-$&&\scriptsize $128(n+$&&&\\
+%     \cline{2-6}  
+%     %SO-PoR 2nd row
+% \multirow{-2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize  SO-PoR }}&\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$2(n+cz)$ &\scriptsize$z$&\scriptsize$4 c z$&\scriptsize$2z(1+c)$&\multirow{-2}{*} {\scriptsize $O(1)$}&\scriptsize  $cz+19z)$&\multirow{-2}{*}{\scriptsize $884z$}&\multirow{-2}{*}{\scriptsize -}&\multirow{-2}{*}{\scriptsize $O(1)$}\\
+%     \cline{2-6}   
+%      
+%     \hline 
+%       %[3] 1st row 
+%       
+%          \hline 
+%          
+% \cellcolor[gray]{.9}  &\multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize }}\cellcolor[gray]{.9}\scriptsize Exp.&\scriptsize$9 n$&\scriptsize$ -$&\scriptsize$-$&$-$&&&\scriptsize$256z+$&\scriptsize $4672n+$&\\
+%     \cline{2-6}
+%     %[3] 2nd row 
+%\cellcolor[gray]{.9}   \multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{armknecht2014outsourced}}}  &\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$10 n$&$-$&\scriptsize$4 z(c+c')$&\scriptsize$z(9c+3)$&\multirow{-2}{*} {\scriptsize $O(1)$}&\multirow{-2}{*} {\scriptsize $128n$}&\scriptsize $||\vv{\bm{F}}||$&\scriptsize $256z$&\multirow{-2}{*} {\scriptsize $O(1)$}\\   
+%      
+%      \hline
+%      
+%       \hline
+%      %[53] 1st row
+%  \cellcolor[gray]{.9}    &\multirow{2}{*}{\rotatebox[origin=c]{0}{\  \scriptsize }}\cellcolor[gray]{.9}\scriptsize Exp.&\scriptsize$-$&$-$&\scriptsize$z (3+c)$&\scriptsize$6 z$&&&&&\\
+%     \cline{2-6}
+%     %[53] 2nd row
+% \cellcolor[gray]{.9}&\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$4 n$&$-$&\scriptsize$2 z(3 c+4)$&\scriptsize$2 c z$&&&&&\\ 
+%    \cline{2-6}
+%    %[53] 3rd row 
+%\cellcolor[gray]{.9}\multirow{-3}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{xu2016lightweight}}}&\cellcolor[gray]{.9}\scriptsize Pairing&\scriptsize$-$&\scriptsize$-$&\scriptsize$7 z$&$-$&\multirow{-3}{*} {\scriptsize $O(1)$}&\multirow{-3}{*} {\scriptsize $2048n$}&\multirow{-3}{*} {\scriptsize $6144z$}&\multirow{-3}{*} {-}&\multirow{-3}{*} {\scriptsize $O(1)$}\\ 
+% \hline
+%  
+%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \hline
+%\cellcolor[gray]{.9}& \multirow{2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize }} \scriptsize Exp.&\scriptsize$-$&\scriptsize$3T z$&\scriptsize$-$ &\scriptsize$3z$&&&\scriptsize$128cz \log n+$&&\\
+%     \cline{2-6}  
+% \multirow{-2}{*}{\rotatebox[origin=c]{0}{\cellcolor[gray]{.9}\scriptsize  \cite{Storage-Time} }}&\cellcolor[gray]{.9}\scriptsize Add. or Mul.&\scriptsize$-$ &\scriptsize$Tz$&\scriptsize$-$&\scriptsize$-$&\multirow{-2}{*} {\scriptsize $O(\log n)$}&\multirow{-2}{*} {\scriptsize $128$}&\scriptsize $4096z$&\multirow{-2}{*} {-}&\multirow{-2}{*} {\scriptsize$O(\log n)$} \\
+%     \cline{2-6}    
+%     \hline 
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% 
+% 
+%\end{tabular}  %xxxxxx
+%\end{minipage}
+%\end{center}
+%\end{footnotesize}
+%\end{table*}
+%
+
+%--------------------------------------------------------
+

@@ -1,0 +1,304 @@
+% !TEX root =main.tex
+
+
+
+%\section{Notations}\label{sec:notation-table}
+%
+%We summarise our notation in Table \ref{table:notation-table}.
+%
+%\vspace{-4mm}
+%\begin{table}[!htbp]
+%%\begin{footnotesize}
+%\small{
+%\begin{center}
+%%\footnotesize{
+%
+%%\scalebox{.98}{
+%%\begin{minipage}{.9\linewidth}
+%\caption{ \small Notation Table.}\label{table:notation-table} 
+%\renewcommand{\arraystretch}{.7}
+%%\resizebox{\columnwidth}{!}{
+%
+%% 1st table
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+%
+%\hline 
+%
+%\cellcolor{gray!30}\scriptsize \textbf{Setting} &\cellcolor{gray!30} \scriptsize \textbf{Symbol}&\cellcolor{gray!30} \scriptsize \textbf{Description}  \\
+%    \hline
+%    
+%     \hline
+%
+%%Generic
+%\multirow{9}{*}{\rotatebox[origin=c]{90}{\scriptsize \textbf{Generic}}}
+%
+% &\cellcolor{white!20}\scriptsize$z$&\cellcolor{white!20}\scriptsize \text{Number of puzzles or delegated verifications}\\   
+% 
+%&\cellcolor{gray!20}\scriptsize$h$, $h_{\scriptscriptstyle j}$ &\cellcolor{gray!20}\scriptsize Hash values  \\  
+%
+%&\cellcolor{white!20}\scriptsize$d$, $d_{\scriptscriptstyle j}$ &\cellcolor{white!20}\scriptsize Randomness  of commitment\\ 
+%
+%&\cellcolor{gray!20}\scriptsize$n$ &\cellcolor{gray!20}\scriptsize Number of file blocks\\ 
+%&\cellcolor{white!20}\scriptsize$m$, $m_{\scriptscriptstyle j}$ &\cellcolor{white!20}\scriptsize Plaintext messages\\   
+%  &\cellcolor{gray!20}\scriptsize$\ddot{o}$ &\cellcolor{gray!20}\scriptsize Pair representation\\
+%&\cellcolor{white!20}\scriptsize$\vv{\bm{o}}$ &\cellcolor{white!20}\scriptsize Vector representation\\                  
+%&\cellcolor{gray!20}\scriptsize$\ddot{p}:(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$ &\cellcolor{gray!20}\scriptsize Commitment opening\\ 
+%                      
+%&\cellcolor{white!20}\scriptsize$\mathtt{H}$ &\cellcolor{white!20}\scriptsize Hash function\\
+%
+%                      
+% \hline
+% 
+%  \hline
+%  
+%  
+%    %CR-TLP
+%\multirow{11}{*}{\rotatebox[origin=c]{90}{\scriptsize  \textbf{C-TLP}}}
+%
+%&\cellcolor{gray!20}\scriptsize$\lambda$&\cellcolor{gray!20}\cellcolor{gray!20}\scriptsize TLP security parameter\\
+%
+%&\cellcolor{white!20}\scriptsize$\Delta$&\cellcolor{white!20}\scriptsize Time win. message remains hidden\\ 
+%       
+%&\cellcolor{gray!20}\scriptsize $S$&\cellcolor{gray!20}\scriptsize Max. squaring  done per sec.    \\ 
+%    
+%&\cellcolor{white!20}\scriptsize $T$&\cellcolor{white!20}\scriptsize $T=S\Delta$    \\
+%
+%&\cellcolor{gray!20}\scriptsize $s_{\scriptscriptstyle j}$&\cellcolor{gray!20}\scriptsize $j\text{-th}$ solution\\
+%
+%&\cellcolor{white!20}\scriptsize $\ddot{o}_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize $j\text{-th}$ puzzle, $\ddot{o}_{\scriptscriptstyle j}:(o_{\scriptscriptstyle j,1},o_{\scriptscriptstyle j,2})$\\
+%
+%&\cellcolor{gray!20}\scriptsize $f_{\scriptscriptstyle j}$&\cellcolor{gray!20}\scriptsize Time  when  $j{\text{-th}}$ solution is found\\
+%
+%&\cellcolor{white!20}\scriptsize $k, k_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize Sym. key encryption keys\\
+%
+%&\cellcolor{gray!20}\scriptsize $pk, sk$&\cellcolor{gray!20}\scriptsize Public and secret keys\\
+%
+%&\cellcolor{white!20}\scriptsize $q_{\scriptscriptstyle 1}, q_{\scriptscriptstyle 2}$&\cellcolor{white!20}\scriptsize Large prime numbers\\
+%
+%&\cellcolor{gray!20}\scriptsize $N$&\cellcolor{gray!20}\scriptsize RSA modulus, $N=q_{\scriptscriptstyle 1} q_{\scriptscriptstyle 2}$\\
+%
+%\hline 
+%
+%
+%  \hline
+%  
+%  
+%%SO-PoR 
+%  \multirow{20}{*}{\rotatebox[origin=c]{90}{\scriptsize \textbf{SO-PoR}}}
+%&\cellcolor{gray!20}\scriptsize$\mathtt{PRF}$&\cellcolor{gray!20}\scriptsize Pseudorandom function\\  
+%                   
+%    &\cellcolor{white!20}\scriptsize$\hat{k},v_{\scriptscriptstyle j},l_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize $\mathtt{PRF}$'s keys\\ 
+%&\cellcolor{gray!20}\scriptsize$\iota$&\cellcolor{gray!20}\scriptsize Security parameter, $\iota=128$-bit\\ 
+%&\cellcolor{white!20}\scriptsize$p$&\cellcolor{white!20}\scriptsize Large prime number, $|p|=\iota$\\ 
+%
+%&\cellcolor{gray!20}\scriptsize$w$&\cellcolor{gray!20}\scriptsize  Blockchain block index\\ 
+%                    
+%&\cellcolor{white!20}\scriptsize$g$&\cellcolor{white!20}\scriptsize Blockchain security parameter: chain quality    \\    
+%      
+%  &\cellcolor{gray!20}\scriptsize$\lambda'$&\cellcolor{gray!20}\scriptsize Blockchain generic security parameter\\  
+%&\cellcolor{white!20}\scriptsize${\bm{F}}$&\cellcolor{white!20}\scriptsize Outsourced encoded file\\ 
+%&\cellcolor{gray!20}\scriptsize$F_{\scriptscriptstyle j}$&\cellcolor{gray!20}\scriptsize A file block\\ 
+%&\cellcolor{white!20}\scriptsize$|{\bm{F}}|$&\cellcolor{white!20}\scriptsize Number of file blocks, $|{\bm{F}}|=n$\\ 
+% &\cellcolor{gray!20}\scriptsize$||{\bm{F}}||$&\cellcolor{gray!20}\scriptsize File bit-size\\     
+%% \multirow{8}{*}{\rotatebox[origin=c]{90}{\scriptsize \textbf{SO-PoR}}}
+%
+%&\cellcolor{white!20}\scriptsize$\sigma_{\scriptscriptstyle i}$&\cellcolor{white!20}\scriptsize Permanent tag   \\  
+% &\cellcolor{gray!20}\scriptsize$\sigma_{\scriptscriptstyle b,j}$&\cellcolor{gray!20}\scriptsize Disposable tag   \\    
+% 
+%    &\cellcolor{white!20}\scriptsize$\alpha, \alpha_{\scriptscriptstyle j}, r_{\scriptscriptstyle i},r_{\scriptscriptstyle b,j}$&\cellcolor{white!20}\scriptsize Pseudorandom values  \\ 
+%                
+%&\cellcolor{gray!20}\scriptsize$c$&\cellcolor{gray!20}\scriptsize Number of challenges \\ 
+%        
+%&\cellcolor{white!20}\scriptsize$\mathcal {B}_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize Blockchain's $j{\text{-th}}$ block\\ 
+%
+%&\cellcolor{gray!20}\scriptsize$(\mu_{\scriptscriptstyle j},\xi_{\scriptscriptstyle j})$&\cellcolor{gray!20}\scriptsize $j{\text{-th}}$ PoR proof\\ 
+%&\cellcolor{white!20}\scriptsize$\Delta_{\scriptscriptstyle 1}$&\cellcolor{white!20}\scriptsize Time taken to generate  a PoR\\ 
+%
+%&\cellcolor{gray!20}\scriptsize$\Delta_{\scriptscriptstyle 2}$&\cellcolor{gray!20}\cellcolor{gray!20}\scriptsize Time taken a contract gets a message\\ 
+%
+%&\cellcolor{white!20}\scriptsize$e$&\cellcolor{white!20}\scriptsize Coins paid for an accepting PoR\\ 
+%
+%\hline
+%
+%
+%        
+%
+%
+%\end{tabular}
+%
+%\end{center}
+%}
+%%\end{footnotesize}
+%\end{table}
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Notations}\label{sec:notation-table}
+
+We summarise our notations in Table \ref{table:notation-table}.
+\vspace{-6mm}
+
+\begin{table*}[!htbp]
+\begin{scriptsize}
+\begin{center}
+\footnotesize{
+
+\caption{ \small Notation Table.}\label{commu-breakdown-party} 
+\renewcommand{\arraystretch}{.84}
+\scalebox{0.86}{
+% 1st table
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+
+\hline 
+
+\cellcolor{gray!15}\scriptsize \textbf{Setting} &\cellcolor{gray!15} \scriptsize \textbf{Symbol}&\cellcolor{gray!15} \scriptsize \textbf{Description}  \\
+    \hline
+    
+     \hline
+
+%Generic
+\multirow{9}{*}{\rotatebox[origin=c]{90}{\scriptsize \textbf{Generic}}}
+
+ &\cellcolor{white!20}\scriptsize$z$&\cellcolor{white!20}\scriptsize \text{Number of puzzles or delegated verifications}\\   
+ 
+&\cellcolor{gray!20}\scriptsize$h$, $h_{\scriptscriptstyle j}$ &\cellcolor{gray!20}\scriptsize Hash values  \\  
+
+&\cellcolor{white!20}\scriptsize$d$, $d_{\scriptscriptstyle j}$ &\cellcolor{white!20}\scriptsize Randomness  of commitment\\ 
+
+&\cellcolor{gray!20}\scriptsize$n$ &\cellcolor{gray!20}\scriptsize Number of file blocks\\ 
+&\cellcolor{white!20}\scriptsize$m$, $m_{\scriptscriptstyle j}$ &\cellcolor{white!20}\scriptsize Plaintext messages\\   
+  &\cellcolor{gray!20}\scriptsize$\ddot{o}$ &\cellcolor{gray!20}\scriptsize Pair representation\\
+&\cellcolor{white!20}\scriptsize$\vv{\bm{o}}$ &\cellcolor{white!20}\scriptsize Vector representation\\                  
+&\cellcolor{gray!20}\scriptsize$\ddot{p}:(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$ &\cellcolor{gray!20}\scriptsize Commitment opening\\ 
+                      
+&\cellcolor{white!20}\scriptsize$\mathtt{H}$ &\cellcolor{white!20}\scriptsize Hash function\\
+
+                      
+ \hline
+ 
+  \hline
+  
+  %CR-TLP
+  %CR-TLP
+\multirow{11}{*}{\rotatebox[origin=c]{90}{\scriptsize  \textbf{C-TLP}}}
+
+&\cellcolor{gray!20}\scriptsize$\lambda$&\cellcolor{gray!20}\cellcolor{gray!20}\scriptsize TLP security parameter\\
+
+&\cellcolor{white!20}\scriptsize$\Delta$&\cellcolor{white!20}\scriptsize Time win. message remains hidden\\ 
+       
+&\cellcolor{gray!20}\scriptsize $S$&\cellcolor{gray!20}\scriptsize Max. squaring  done per sec.    \\ 
+    
+&\cellcolor{white!20}\scriptsize $T$&\cellcolor{white!20}\scriptsize $T=S\Delta$    \\
+
+&\cellcolor{gray!20}\scriptsize $s_{\scriptscriptstyle j}$&\cellcolor{gray!20}\scriptsize $j\text{-th}$ solution\\
+
+&\cellcolor{white!20}\scriptsize $\ddot{o}_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize $j\text{-th}$ puzzle, $\ddot{o}_{\scriptscriptstyle j}:(o_{\scriptscriptstyle j,1},o_{\scriptscriptstyle j,2})$\\
+
+&\cellcolor{gray!20}\scriptsize $f_{\scriptscriptstyle j}$&\cellcolor{gray!20}\scriptsize Time  when  $j{\text{-th}}$ solution is found\\
+
+&\cellcolor{white!20}\scriptsize $k, k_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize Sym. key encryption keys\\
+
+&\cellcolor{gray!20}\scriptsize $pk, sk$&\cellcolor{gray!20}\scriptsize Public and secret keys\\
+
+&\cellcolor{white!20}\scriptsize $q_{\scriptscriptstyle 1}, q_{\scriptscriptstyle 2}$&\cellcolor{white!20}\scriptsize Large prime numbers\\
+
+&\cellcolor{gray!20}\scriptsize $N$&\cellcolor{gray!20}\scriptsize RSA modulus, $N=q_{\scriptscriptstyle 1} q_{\scriptscriptstyle 2}$\\
+
+\hline 
+
+   
+
+\end{tabular}
+
+% 2nd table
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+    \hline
+\cellcolor{gray!15}\scriptsize \textbf{Setting} &\cellcolor{gray!15} \scriptsize \textbf{Symbol}&\cellcolor{gray!15} \scriptsize \textbf{Description}  \\
+    \hline
+    
+\hline
+
+
+
+\hline
+
+
+%SO-PoR right
+ \multirow{20}{*}{\rotatebox[origin=c]{90}{\scriptsize \textbf{SO-PoR}}}
+&\cellcolor{gray!20}\scriptsize$\mathtt{PRF}$&\cellcolor{gray!20}\scriptsize Pseudorandom function\\  
+                   
+    &\cellcolor{white!20}\scriptsize$\hat{k},v_{\scriptscriptstyle j},l_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize $\mathtt{PRF}$'s keys\\ 
+&\cellcolor{gray!20}\scriptsize$\iota$&\cellcolor{gray!20}\scriptsize Security parameter, $\iota=128$-bit\\ 
+&\cellcolor{white!20}\scriptsize$p$&\cellcolor{white!20}\scriptsize Large prime number, $|p|=\iota$\\ 
+
+&\cellcolor{gray!20}\scriptsize$w$&\cellcolor{gray!20}\scriptsize  Blockchain block index\\ 
+                    
+&\cellcolor{white!20}\scriptsize$g$&\cellcolor{white!20}\scriptsize Blockchain security parameter: chain quality    \\    
+      
+  &\cellcolor{gray!20}\scriptsize$\lambda'$&\cellcolor{gray!20}\scriptsize Blockchain generic security parameter\\  
+&\cellcolor{white!20}\scriptsize${\bm{F}}$&\cellcolor{white!20}\scriptsize Outsourced encoded file\\ 
+&\cellcolor{gray!20}\scriptsize$F_{\scriptscriptstyle j}$&\cellcolor{gray!20}\scriptsize A file block\\ 
+&\cellcolor{white!20}\scriptsize$|{\bm{F}}|$&\cellcolor{white!20}\scriptsize Number of file blocks, $|{\bm{F}}|=n$\\ 
+ &\cellcolor{gray!20}\scriptsize$||{\bm{F}}||$&\cellcolor{gray!20}\scriptsize File bit-size\\     
+% \multirow{8}{*}{\rotatebox[origin=c]{90}{\scriptsize \textbf{SO-PoR}}}
+
+&\cellcolor{white!20}\scriptsize$\sigma_{\scriptscriptstyle i}$&\cellcolor{white!20}\scriptsize Permanent tag   \\  
+ &\cellcolor{gray!20}\scriptsize$\sigma_{\scriptscriptstyle b,j}$&\cellcolor{gray!20}\scriptsize Disposable tag   \\    
+ 
+    &\cellcolor{white!20}\scriptsize$\alpha, \alpha_{\scriptscriptstyle j}, r_{\scriptscriptstyle i},r_{\scriptscriptstyle b,j}$&\cellcolor{white!20}\scriptsize Pseudorandom values  \\ 
+                
+&\cellcolor{gray!20}\scriptsize$c$&\cellcolor{gray!20}\scriptsize Number of challenges \\ 
+        
+&\cellcolor{white!20}\scriptsize$\mathcal {B}_{\scriptscriptstyle j}$&\cellcolor{white!20}\scriptsize Blockchain's $j{\text{-th}}$ block\\ 
+
+&\cellcolor{gray!20}\scriptsize$(\mu_{\scriptscriptstyle j},\xi_{\scriptscriptstyle j})$&\cellcolor{gray!20}\scriptsize $j{\text{-th}}$ PoR proof\\ 
+&\cellcolor{white!20}\scriptsize$\Delta_{\scriptscriptstyle 1}$&\cellcolor{white!20}\scriptsize Time taken to generate  a PoR\\ 
+
+&\cellcolor{gray!20}\scriptsize$\Delta_{\scriptscriptstyle 2}$&\cellcolor{gray!20}\cellcolor{gray!20}\scriptsize Time taken a contract gets a message\\ 
+
+&\cellcolor{white!20}\scriptsize$e$&\cellcolor{white!20}\scriptsize Coins paid for an accepting PoR\\ 
+
+\hline
+   
+
+           
+           
+           
+\end{tabular}\label{table:notation-table}
+
+}}
+\end{center}
+\end{scriptsize}
+\end{table*}
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,43 @@
+% !TEX root =main.tex
+
+\section{C-TLP Security Proof}\label{CR-TLP-Proof}
+ 
+In this section, we present   the security proof of C-TLP scheme. We first prove that without solving $j\text{\small{-th}}$ puzzle, a solver cannot find the parameters  needed to solve the next puzzle, i.e. $(j+1)\text{\small{-th}}$   one. 
+
+ 
+  \begin{lemma}[Next Group Generator Privacy]\label{lemma::Next-Generator-Privacy}  Let $k$ be a random key for a symmetric key encryption, and  $N$ be a  sufficiently large RSA modulus. Let  the security parameter be $\lambda=|N|=|k|$.  In C-TLP, given puzzle vector: $\vv{\bm{o}}$ and public key: $pk$, an adversary $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$, defined in Section \ref{Section::Multi-instance-Time-lock Puzzle-Definition},  cannot find the next group generator: 
+$r_{\scriptscriptstyle j+1}$, where $r_{\scriptscriptstyle j+1} \stackrel{\scriptscriptstyle\$}\leftarrow \mathbb{Z}^{\scriptscriptstyle *}_{\scriptscriptstyle N}$and $j\geq1$, significantly smaller than   $T_{\scriptscriptstyle j}=\delta(j\Delta)$, except with a negligible probability in the security parameter, $\mu(\lambda)$ 
+  \end{lemma}
+ \begin{proof}
+Since the next generator: $r_{\scriptscriptstyle j+1}$, is: (a) encrypted along with the $j\text{\small{-th}}$ puzzle solution: $s_{\scriptscriptstyle j}$, and (b)  picked uniformly at random from $\mathbb{Z}^{\scriptscriptstyle *}_{\scriptscriptstyle N}$, for the adversary to find $r_{\scriptscriptstyle j+1}$ without performing enough squaring, i.e. $T_{\scriptscriptstyle j}$, it has to either (a) break the symmetric key scheme, decrypt the related ciphertext: $s_{\scriptscriptstyle i}$ and extract the random value from it, or (b) correctly guess $r_{\scriptscriptstyle j+1}$. In both cases, the probability of success is negligible in secure parameter $\mu(\lambda)$,  i.e. $2^{\scriptscriptstyle -|k|}$ in the former case and $2^{\scriptscriptstyle -|N|}$ in the latter one.  
+ \hfill\(\Box\)
+  \end{proof} 
+%. But its  probability of success is $2^{\scriptscriptstyle -|k|}$ that is negligible in the security parameter,  or  guess $r_{\scriptscriptstyle j+1}$, that has the probability of success  at most $2^{\scriptscriptstyle -|N|}$ which is negligible in $\lambda$ as well.    %\hfill\(\Box\)
+ %t \end{proof} 
+  
+ In the following, we prove that the privacy of a solution in C-TLP scheme is preserved according to Definition \ref{Def::Solution-Privacy}. 
+ 
+ 
+ \begin{theorem} [C-TLP Solution Privacy]\label{Solution-Privacy} Let $N$ be a  strong RSA modulus and $\Delta$ be a time parameter. If the sequential squaring assumption holds,  factoring $N$ is a hard problem, $\mathtt{H}(.)$ is a random oracle and the symmetric key encryption is  semantically secure, then  C-TLP encoding $z$ solutions is a privacy-preserving multi-instance time-lock puzzle w.r.t. Definition \ref{Def::Solution-Privacy}.
+ \end{theorem}
+  \begin{proof} In the following, we argue  for an adversary $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$, where $\mathcal{A}_{\scriptscriptstyle 1}$ runs in total time $O(poly(j\Delta,\lambda))$,  $\mathcal{A}_{\scriptscriptstyle 2}$ runs in  time $\delta(j\Delta)<j\Delta$ using at most $\pi(\Delta)$ parallel processors, and  $j\in [1,z]$,  (a) when $z=1$: to find $s_{\scriptscriptstyle 1}$ earlier than $\delta(\Delta)$,  it has to  break the TLP scheme, and (b) when $z>1$: to find $s_{\scriptscriptstyle j}$ earlier than $T_{\scriptscriptstyle j}=\delta(j\Delta)$, it has to either find   at least one of the previous solutions earlier than it is supposed to (that ultimately requires breaking TLP scheme again), or find $j\text{\small{-th}}$ generator: $r_{\scriptscriptstyle j}$, earlier. Also, we argue that the commitments: $h_{\scriptscriptstyle j}$, are computationally hiding.   Specifically, when $z=1$, the security of C-TLP is reduced to the security of  the TLP and the scheme is secure as long as TLP is, as the two schemes would be identical. On the other hand, when $z>1$, the adversary has to either find $s_{\scriptscriptstyle j}$ earlier than $T_{\scriptscriptstyle j}$ as soon as the previous solution: $s_{\scriptscriptstyle j-1}$ is found that requires either breaking the TLP scheme, or finding any generator $r_{\scriptscriptstyle j}$  before $s_{\scriptscriptstyle j-1}$ is extracted, when $j\in [2,z]$. Nevertheless, the TLP scheme is secure (under RSA,  sequential squaring, and security of symmetric key encryption assumptions) according to  Theorem \ref{theorem::R-LTP-Sec}, and also the probability of finding the next generator: $r_{\scriptscriptstyle j}$ earlier than $T_{\scriptscriptstyle j-1}$ is negligible, according to Lemma \ref{lemma::Next-Generator-Privacy}. Moreover, for an adversary to find a solution earlier, it may also try to find a (partial information of) pre-image of the commitment: $h_{\scriptscriptstyle j}$ before fully (or without) solving the puzzle. But, this is infeasible for a PPT adversary, given  output of a random oracle: $\mathtt{H}(.)$. Thus, C-TLP is a privacy-preserving multi-instance time-lock puzzle scheme.  \hfill\(\Box\)
+  \end{proof}
+ 
+Next, we prove that the validity of a solution in C-TLP scheme is preserved according to Definition \ref{Def::Solution-Validity}. 
+  \begin{theorem} [C-TLP Solution Validity]\label{Solution-Validity} Let $\mathtt{H}(.)$ be a hash function modeled as a random oracle. Then, C-TLP preserves a solution validity w.r.t. Definition \ref{Def::Solution-Validity}.  
+\end{theorem}
+\begin{proof}
+ The proof  boils down to  the security (i.e. binding property) of the traditional hash-based commitment scheme. In particular, given an  opening pair, $\ddot{p}:(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$ and the commitment $h_{\scriptscriptstyle j}=\mathtt{H}(m_{\scriptscriptstyle j},d_{\scriptscriptstyle j})$, for an adversary to break the solution validity, it has to come up $(m'_{\scriptscriptstyle j},d'_{\scriptscriptstyle j})$, such that $\mathtt{H}(m'_{\scriptscriptstyle j},d'_{\scriptscriptstyle j})=h_{\scriptscriptstyle j}$, where $m_{\scriptscriptstyle j}\neq m'_{\scriptscriptstyle j}$, i.e. finds a collision of $\mathtt{H}(.)$. However, this is infeasible for a PPT adversary, as $\mathtt{H}(.)$ is collision resistance, in the random oracle model. 
+ \hfill\(\Box\)
+\end{proof}
+ 
+ In the following, we restate the main theorem presented in Section \ref{Section::C-TLP-protocol} and then prove it.  
+
+\
+
+\noindent\textbf{Theorem \ref{C-TLP-Sec} (C-TLP Security).} \textit{C-TLP  is a secure multi-instance time-lock puzzle. }
+
+   
+ \begin{proof} According to Theorems \ref{Solution-Privacy} and \ref{Solution-Validity}, the privacy and validity of a solution in C-TLP are preserved, respectively.   So, w.r.t. Definition \ref{def::C-TLP-security}, C-TLP is a secure multi-instance  time-lock puzzle.
+  \hfill\(\Box\)
+\end{proof}

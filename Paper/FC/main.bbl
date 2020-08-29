@@ -1,0 +1,247 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem{DBLP:journals/iacr/AbadiCKZ19}
+Abadi, A., Ciampi, M., Kiayias, A., Zikas, V.: Timed signatures and
+  zero-knowledge proofs -timestamping in the blockchain era-. {IACR} Cryptology
+  ePrint Archive  2019,  644 (2019)
+
+\bibitem{ArmknechtBBK16}
+Armknecht, F., Barman, L., Bohli, J., Karame, G.O.: Mirror: Enabling proofs of
+  data replication and retrievability in the cloud. In: 25th {USENIX} Security
+  16
+
+\bibitem{armknecht2014outsourced}
+Armknecht, F., Bohli, J.M., Karame, G.O., Liu, Z., Reuter, C.A.: Outsourced
+  proofs of retrievability. In: {CCS}'14
+
+\bibitem{DBLP:conf/ccs/AtenieseBCHKPS07}
+Ateniese, G., Burns, R.C., Curtmola, R., Herring, J., Kissner, L., Peterson,
+  Z.N.J., Song, D.X.: Provable data possession at untrusted stores. In:
+  {CCS}'07
+
+\bibitem{Storage-Time}
+Ateniese, G., Chen, L., Etemad, M., Tang, Q.: Proof of storage-time:
+  Efficiently checking continuous data availability. In: {NDSS}'20
+
+\bibitem{AteniesePMT08}
+Ateniese, G., Pietro, R.D., Mancini, L.V., Tsudik, G.: Scalable and efficient
+  provable data possession. In: {SECURECOMM}'08
+
+\bibitem{DBLP:conf/crypto/BadertscherMTZ17}
+Badertscher, C., Maurer, U., Tschudi, D., Zikas, V.: Bitcoin as a transaction
+  ledger: {A} composable treatment. In: Katz, J., Shacham, H. (eds.)
+  {CRYPTO}'17
+
+\bibitem{blockchain-data-audit-18}
+Banerjee, P., Nikam, N., Ruj, S.: Blockchain enabled privacy preserving data
+  audit. CoRR  abs/1904.12362 (2019)
+
+\bibitem{DBLP:conf/crypto/BellareCK96}
+Bellare, M., Canetti, R., Krawczyk, H.: Keying hash functions for message
+  authentication. In: Advances in Cryptology - {CRYPTO} '96
+
+\bibitem{BonehBBF18}
+Boneh, D., Bonneau, J., B{\"{u}}nz, B., Fisch, B.: Verifiable delay functions.
+  In: Shacham, H., Boldyreva, A. (eds.) {CRYPTO}'18
+
+\bibitem{BonehN00}
+Boneh, D., Naor, M.: Timed commitments. In: Bellare, M. (ed.) {CRYPTO} 2000
+
+\bibitem{BrakerskiDGM19}
+Brakerski, Z., D{\"{o}}ttling, N., Garg, S., Malavolta, G.: Leveraging linear
+  decryption: Rate-1 fully-homomorphic encryption and time-lock puzzles. In:
+  {TCC}'19,
+
+\bibitem{CampanelliGGN17}
+Campanelli, M., Gennaro, R., Goldfeder, S., Nizzardo, L.: Zero-knowledge
+  contingent payments revisited: Attacks and payments for services. In:
+  {CCS}'17
+
+\bibitem{Canetti01}
+Canetti, R.: Universally composable security: {A} new paradigm for
+  cryptographic protocols. In: 42nd Annual Symposium on Foundations of Computer
+  Science, {FOCS} 2001, 14-17 October 2001, Las Vegas, Nevada, {USA}. pp.
+  136--145. {IEEE} Computer Society (2001)
+
+\bibitem{Cash:2017:DPR:3038037.3038087}
+Cash, D., K\"{u}p\c{c}\"{u}, A., Wichs, D.: Dynamic proofs of retrievability
+  via oblivious ram. J. Cryptol.  (2017)
+
+\bibitem{ChenD12}
+Chen, H., Deviani, R.: A secure e-voting system based on {RSA} time-lock puzzle
+  mechanism. In: {BWCCA}'12 ,
+
+\bibitem{DworkN92}
+Dwork, C., Naor, M.: Pricing via processing or combatting junk mail. In:
+  Brickell, E.F. (ed.) {CRYPTO}'92
+
+\bibitem{ErwayKPT09}
+Erway, C.C., K{\"{u}}p{\c{c}}{\"{u}}, A., Papamanthou, C., Tamassia, R.:
+  Dynamic provable data possession. In: {CCS}'09
+
+\bibitem{DistributedPDP}
+Etemad, M., K{\"u}p{\c{c}}{\"u}, A.: Transparent, distributed, and replicated
+  dynamic provable data possession. In: Jacobson, M., Locasto, M., Mohassel,
+  P., Safavi-Naini, R. (eds.) ACNS'13
+
+\bibitem{Audita18}
+Francati, D., Ateniese, G., Faye, A., Milazzo, A.M., Perillo, A.M., Schiatti,
+  L., Giordano, G.: Audita: {A} blockchain-based auditing framework for
+  off-chain storage. CoRR'19
+
+\bibitem{DBLP:conf/fc/GarayJ02}
+Garay, J.A., Jakobsson, M.: Timed release of standard digital signatures. In:
+  Blaze, M. (ed.) {FC}'02
+
+\bibitem{DBLP:conf/crypto/GarayKL17}
+Garay, J.A., Kiayias, A., Leonardos, N.: The bitcoin backbone protocol with
+  chains of variable difficulty. In: Katz, J., Shacham, H. (eds.) {CRYPTO}'17
+
+\bibitem{garay2019}
+Garay, J.A., Kiayias, A., Panagiotakos, G.: Iterated search problems and
+  blockchain security under falsifiable assumptions. IACR Cryptology ePrint
+  Archive  (2019)
+
+\bibitem{groza2006chained}
+Groza, B., Petrica, D.: On chained cryptographic puzzles. In: {SACI}'06,
+
+\bibitem{HaoXWJW18}
+Hao, K., Xin, J., Wang, Z., Jiang, Z., Wang, G.: Decentralized data integrity
+  verification model in untrusted environment. In: {APWeb-WAIM}'18
+
+\bibitem{DBLP:conf/ccs/JuelsK07}
+Juels, A., Jr., B.S.K.: Pors: proofs of retrievability for large files. In:
+  {CCS}'07
+
+\bibitem{DBLP:conf/cai/Kamara13}
+Kamara, S.: Proofs of storage: Theory, constructions and applications. In:
+  {CAI}'13
+
+\bibitem{KarameC10}
+Karame, G., Capkun, S.: Low-cost client puzzles based on modular
+  exponentiation. In: Gritzalis, D., Preneel, B., Theoharidou, M. (eds.)
+  {ESORICS} '10
+
+\bibitem{DBLP:books/crc/KatzLindell2007}
+Katz, J., Lindell, Y.: Introduction to Modern Cryptography. Chapman and
+  Hall/CRC Press (2007)
+
+\bibitem{KoppBK16}
+Kopp, H., B{\"{o}}sch, C., Kargl, F.: Koppercoin - {A} distributed file storage
+  with financial incentives. In: {ISPEC}'16
+
+\bibitem{KoppMHKB17}
+Kopp, H., M{\"{o}}dinger, D., Hauck, F.J., Kargl, F., B{\"{o}}sch, C.: Design
+  of a privacy-preserving decentralized file storage with financial incentives.
+  In: EuroS{\&}P Workshops'17
+
+\bibitem{KosbaMSWP16}
+Kosba, A.E., Miller, A., Shi, E., Wen, Z., Papamanthou, C.: Hawk: The
+  blockchain model of cryptography and privacy-preserving smart contracts. In:
+  {S\&P}'16
+
+\bibitem{kupcu2010efficient}
+Kupcu, A.: Efficient cryptography for the next generation secure cloud. Brown
+  University (2010)
+
+\bibitem{KuppusamyRSBN12}
+Kuppusamy, L., Rangasamy, J., Stebila, D., Boyd, C., Nieto, J.M.G.: Practical
+  client puzzles in the standard model. In: Youm, H.Y., Won, Y. (eds.)
+  {ASIACCS} '12
+
+\bibitem{Filecoin}
+Labs, P.: Filecoin: A decentralized storage network  (2017),
+  \url{https://filecoin.io/filecoin.pdf}
+
+\bibitem{LuuTKS15}
+Luu, L., Teutsch, J., Kulkarni, R., Saxena, P.: Demystifying incentives in the
+  consensus computer. In: Ray, I., Li, N., Kruegel, C. (eds.) {CCS}'15
+
+\bibitem{Ma05}
+Ma, M.: Mitigating denial of service attacks with password puzzles. In:
+  {ITCC}'05
+
+\bibitem{MahmoodyMV11}
+Mahmoody, M., Moran, T., Vadhan, S.P.: Time-lock puzzles in the random oracle
+  model. In: {CRYPTO}'11
+
+\bibitem{MalavoltaT19}
+Malavolta, G., Thyagarajan, S.A.K.: Homomorphic time-lock puzzles and
+  applications. In: {CRYPTO}'19
+
+\bibitem{MillerPermacoin}
+Miller, A., Juels, A., Shi, E., Parno, B., Katz, J.: Permacoin: Repurposing
+  bitcoin work for data preservation. In: {S\&P}'14
+
+\bibitem{Pedersen91}
+Pedersen, T.P.: Non-interactive and information-theoretic secure verifiable
+  secret sharing. In: {CRYPTO} '91
+
+\bibitem{RennerMK18}
+Renner, T., M{\"{u}}ller, J., Kao, O.: Endolith: {A} blockchain-based framework
+  to enhance data retention in cloud storages. In: {PDP}'18
+
+\bibitem{Rivest:1996:TPT:888615}
+Rivest, R.L., Shamir, A., Wagner, D.A.: Time-lock puzzles and timed-release
+  crypto. Tech. rep. (1996)
+
+\bibitem{RujRBK18}
+Ruj, S., Rahman, M.S., Basu, A., Kiyomoto, S.: Blockstore: {A} secure
+  decentralized storage framework on blockchain. In: {AINA}'18
+
+\bibitem{SenguptaR18}
+Sengupta, B., Ruj, S.: Keyword-based delegable proofs of storage. In:
+  {ISPEC}'18
+
+\bibitem{DBLP:conf/asiacrypt/ShachamW08}
+Shacham, H., Waters, B.: Compact proofs of retrievability. In: ASIACRYPT. pp.
+  90--107 (2008)
+
+\bibitem{ShenT11}
+Shen, S., Tzeng, W.: Delegable provable data possession for remote data in the
+  clouds. In: {ICICS} 2011
+
+\bibitem{DBLP:conf/ccs/ShiSP13}
+Shi, E., Stefanov, E., Papamanthou, C.: Practical dynamic proofs of
+  retrievability. In: {CCS}'13
+
+\bibitem{sia14}
+Vorick, D., Champine, L.: Sia: Simple decentralized storage. Nebulous Inc
+  (2014)
+
+\bibitem{WatersJHF04}
+Waters, B., Juels, A., Halderman, J.A., Felten, E.W.: New client puzzle
+  outsourcing techniques for dos resistance. In: {CCS}'04
+
+\bibitem{Wesolowski19}
+Wesolowski, B.: Efficient verifiable delay functions. In: Ishai, Y., Rijmen, V.
+  (eds.) {EUROCRYPT}'19
+
+\bibitem{storj14}
+Wilkinson, S., Boshevski, T., Brandoff, J., Buterin, V.: Storj: a peer-to-peer
+  cloud storage network  (2014)
+
+\bibitem{xu2016lightweight}
+Xu, J., Yang, A., Zhou, J., Wong, D.S.: Lightweight delegatable proofs of
+  storage. In: {ESORICS}'16
+
+\bibitem{XueXB19}
+Xue, J., Xu, C., Bai, L.: Dstore: {A} distributed system for outsourced data
+  storage and retrieval. Future Generation Comp. Syst. 2019
+
+\bibitem{XueX0B18}
+Xue, J., Xu, C., Zhang, Y., Bai, L.: Dstore: {A} distributed cloud storage
+  system based on smart contracts and blockchain. In: {ICA3PP}'18
+
+\bibitem{Yao82b}
+Yao, A.C.: Protocols for secure computations (extended abstract). In:
+  {FOCS}'1982
+
+\bibitem{ZhangDLZ18}
+Zhang, Y., Deng, R.H., Liu, X., Zheng, D.: Blockchain based efficient and
+  robust fair payment for outsourcing services in cloud computing. Inf. Sci.
+  (2018)
+
+\end{thebibliography}

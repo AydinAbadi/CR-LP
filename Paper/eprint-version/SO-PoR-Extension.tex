@@ -1,0 +1,28 @@
+% !TEX root =main.tex
+
+%\section{Further Remarks on SO-PoR Protocol}\label{SO-PoR-discussion}
+
+
+
+
+
+\begin{remark}
+ In each verification, e.g. $j\text{\small{-th}}$ one, it is required that the server can: (a) learn the random challenges, (b) compute a proof, and (c) record it in the smart contract, before it is able to learn key $l_{\scriptscriptstyle j}$; otherwise, (i.e. if it learns $l_{\scriptscriptstyle j}$ before sending and registering the proof), it can tamper with the data and pass the verification. Because by knowing $l_{\scriptscriptstyle j}$ it can construct valid tags for the data that has been tampered with. That is why, in the protocol, it is required: $t'_{\scriptscriptstyle j}\geq t_{\scriptscriptstyle j}+\Delta_{\scriptscriptstyle 1}+\Delta_{\scriptscriptstyle 2}$
+\end{remark}
+
+
+\begin{remark}
+The way disposable tags are generated in SO-PoR  differs from those computed  in traditional/outsourced PoR schemes, in spite of having similarities structure-wise. Specifically, (unlike existing protocols, e.g. \cite{DBLP:conf/asiacrypt/ShachamW08,armknecht2014outsourced}) in SO-PoR, each random value, $r_{\scriptscriptstyle b,j}$, utilised to generate a disposable tag of a  block (for $j\text{\small{-th}}$ verification), is not derived from the block index. Instead, it depends on (a  fresh secret key for $j\text{\small{-th}}$ verification and) the total number of blocks challenged in each verification that is a public value. This means, the verifier does not need to know and verify each challenged block's index in the verification phase, which leads to a lower cost.  
+\end{remark}
+
+\begin{remark}
+With minor adjustments, we can reduce the smart contract storage cost from $O(z)$ to constant, $O(1)$ and offload the cost to the server. The idea is that the client after computing the commitmnet vector: $\vv{\bm{h}}=[h_{\scriptscriptstyle 1},...h_{\scriptscriptstyle z}]$,  in step \ref{Gen-Puzzles-}, it preserves the ordering of the elements (i.e. $h_{\scriptscriptstyle j}$ is associated with $j\text{\small{-th}}$ verification) and constructs a  Merkle tree  on top of them. It stores the tree and the vector on the server, and stores only the tree's  root: $R$, on the contract. In this case,  the server in step \ref{fully-recover-l} after recovering $\ddot{p}_{\scriptscriptstyle j}= (l_{\scriptscriptstyle j}, d_{\scriptscriptstyle j})$,  computes: $h_{\scriptscriptstyle j}=\mathtt{H}(l_{\scriptscriptstyle j}||d_{\scriptscriptstyle j})$, and sends a Merkle tree proof (that $h_{\scriptscriptstyle j}$ corresponds to  $R$) along with $\ddot{p}_{\scriptscriptstyle j}$ to the contract. In step \ref{check-hash}, the contract: (a) checks if $h_{\scriptscriptstyle j}=\mathtt{H}(l_{\scriptscriptstyle j}||d_{\scriptscriptstyle j})$, and  (b) verifies the Merkle tree proof.  The rest  remains unchanged.  As a result, the number of values stored in the contract is now $O(1)$. This adjustment comes with an added communication cost: $O(|h_{\scriptscriptstyle j}|\log z)$ for each verification. Nevertheless, the added cost is small and independent of the file size.   For instance, when  $z=10^{\scriptscriptstyle 6}$ and $|h_{\scriptscriptstyle j}|=256$, the  added communication cost is only about $5.1$ kilobit.
+
+\end{remark}
+
+\begin{remark}
+One might be willing to use a combination of existing publicly verifiable PoR and smart contract, such that the contract performs the verification on the client's behalf. However, this approach would have a higher computation or communication cost (especially in the verification phase) than our protocol. Specifically,  there exist two publicly verifiable PoR schemes, based on either (a) BLS signatures, e.g. \cite{DBLP:conf/asiacrypt/ShachamW08}, or (b) Merkle tree, e.g. \cite{MillerPermacoin}. The former approach, in total, requires  $zc$ exponentiations in the verification phase, whereas SO-PoR requires no exponentiations in this phase. Also, the BLS signature-based scheme takes a very long time to encode  a file, as the required number of exponentiations is  $O(|{\bm{F}}|)$. For instance, as measured in \cite{armknecht2014outsourced}, it takes about $55$ minutes to encode a  $64$-MB file,  meaning  it would take about $14$ hours to encode a $1$-GB file. But, in SO-PoR the number of exponentiations, in the store phase, is independent of and much fewer than the file size. On the other hand, the proof size in the Merkle tree-based approach is logarithmic with the file size, i.e. $256zc\log |{\bm{F}}|$ bits, that leads to a high server-side's communication cost. By contrast,  the proof size in SO-PoR is  independent of the file size, and is much shorter, i.e. $884z$ bits. 
+
+
+\end{remark}
+

@@ -1,0 +1,132 @@
+% !TEX root =main.tex
+
+
+
+\section{Preliminaries} 
+
+
+
+
+\subsection{Smart Contract} Cryptocurrencies, such as Bitcoin and Ethereum, in addition to offering a decentralised currency,  support  computations on  transactions. In this setting, often a certain computation logic is encoded in a computer program, called \emph{``smart contract''}. To date, Ethereum is the most predominant cryptocurrency framework that enables users to define arbitrary smart contracts. In this framework,  contract code is stored on the blockchain and  executed by all parties (i.e. miners) maintaining the cryptocurrency,  when the program inputs are provided by transactions. The program execution's  correctness  is  guaranteed by the security of the underlying blockchain components. To prevent  a denial of service attack, the framework requires a transaction creator to pay a  fee, called \emph{``gas''}, depending on the complexity of the contract running on  it.  Nonetheless,  Ethereum smart contracts suffer from an important   issue; namely, the \emph{lack of privacy}, as it requires  every contract's data to be public, which is a major impediment  to  the broad adoption of  smart contracts when a certain level of privacy is desired. To address the issue, researchers/users may either (a)  utilise existing decentralised frameworks  which support privacy-preserving smart contracts, e.g. \cite{KosbaMSWP16}. But, due to the use of generic and computationally expensive cryptographic tools,  they impose a significant cost to their users. Or (b)  design  efficient tailored cryptographic protocols  that preserve (contracts) data privacy, even though non-private smart contracts are used. We take the latter approach in this work. 
+
+
+%Nonetheless,  Ethereum smart contracts suffer from an important   issue; namely, the \emph{lack of privacy}, as it requires  every contract's data to be public, which is a major impediment  to  the broad adoption of  smart contracts when a certain level of privacy is desired. To address the issue, researchers/users may either (a)  utilise existing decentralised frameworks  which support privacy-preserving smart contracts, e.g. \cite{KosbaMSWP16}. But, due to the use of generic and computationally expensive cryptographic tools,  they impose a significant cost to their users. Or (b)  design  efficient tailored cryptographic protocols  that preserve (contracts) data privacy, even though non-private smart contracts are used. We take the latter approach in this work. 
+
+
+\subsection{Commitment Scheme} A commitment scheme involves two parties:  \emph{sender} and  \emph{receiver}, and includes  two phases: \emph{commit} and  \emph{open}. In the commit phase, the sender  commits to a message: $m$ as $\mathtt{Com}(m,d)=h$, that involves a secret value: $d$. At the end of the commit phase,  the commitment: $h$ is sent to the receiver. In the open phase, the sender sends the opening: $\ddot{p}=(m,d)$ to the receiver who verifies its correctness: $\mathtt{Ver}(h,\ddot{p})\stackrel{\scriptscriptstyle ?}=1$ and accepts if the output is $1$.  A commitment scheme must satisfy two properties: (a) \textit{hiding}: infeasible for an adversary (i.e. the receiver) to learn any information about the committed  message: $m$, until the commitment: $h$ is opened, and (b) \textit{binding}:   infeasible for an adversary (i.e. the sender) to open a commitment: $h$ to different values: $\ddot{p}'=(m',d')$ than that used in the commit phase, i.e. infeasible to find  $\ddot{p}'$, \textit{s.t.} $\mathtt{Ver}(h,\ddot{p})=\mathtt{Ver}(h,\ddot{p}')=1$, where $\ddot{p}\neq \ddot{p}'$.  There exist efficient non-interactive  commitment schemes both in (a) the random oracle model using the well-known hash-based scheme such that $\mathtt{Com}(m,d)$ involves computing: $\mathtt{H}(m||d)=h$ and $\mathtt{Ver}(h,\ddot{p})$ requires checking: $\mathtt{H}(m||d)\stackrel{\scriptscriptstyle ?}=h$, where $\mathtt{H}$ is a hash function, and (b)  the standard model, e.g. Pedersen scheme \cite{Pedersen91}. 
+
+
+
+
+
+\subsection{Pseudorandom Function}
+
+Informally, a pseudorandom function ($\mathtt{PRF}$) is a deterministic function that takes a key and an input; and outputs a value  indistinguishable from that of  a truly random function with the same input.   A $\mathtt{PRF}$ is formally defined as follows \cite{DBLP:books/crc/KatzLindell2007}. 
+\begin{definition} Let $W:\{0,1\}^{\scriptscriptstyle\psi}\times \{0,1\}^{\scriptscriptstyle \eta}\rightarrow \{0,1\}^{\scriptscriptstyle  \iota}$ be an efficient  keyed function. It is said $W$ is a pseudorandom function if for all probabilistic polynomial-time distinguishers $B$, there is a negligible function, $\mu(.)$, such that:
+
+\begin{equation*}
+\bigg | Pr[B^{\scriptscriptstyle W_{k}(.)}(1^{\scriptscriptstyle \psi})=1]- Pr[B^{\scriptscriptstyle \omega(.)}(1^{\scriptscriptstyle \psi})=1] \bigg |\leq \mu(\psi)
+\end{equation*}
+
+where  the key, $k\stackrel{\scriptscriptstyle\$}\leftarrow\{0,1\}^{\scriptscriptstyle\psi}$, is chosen uniformly at random and $\omega$ is chosen uniformly at random from the set of functions mapping $\eta$-bit strings to $\iota$-bit strings. 
+\end{definition}
+
+
+%In practice, we are interested in  pseudorandom functions that can be efficiently built on smart contracts given the tools  that a smart contract framework (e.g. Ethereum) offers. HMAC \cite{DBLP:conf/crypto/BellareCK96} satisfies the requirements above.
+
+
+ 
+\subsection{ Time-lock  Puzzle}\label{Time-lock-Encryption} In this section, we restate the formal definition of a time-lock puzzle as well as RSA-based  time-lock puzzle protocol \cite{Rivest:1996:TPT:888615}. We consider the RSA-based puzzle because of its simplicity, and  being the core of (almost) all later time-lock puzzle schemes.
+
+
+\begin{definition}[Time-lock Puzzle]\label{Def::Time-lock-Puzzle} A time-lock puzzle comprises the following efficient three algorithms, such that the puzzle satisfies completeness and efficiency properties. 
+\begin{itemize}[leftmargin=.37cm]
+\item \textbf{Algorithms}:
+\begin{itemize}
+\item[$\bullet$]$\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta)\rightarrow (pk,sk)$: a probabilistic algorithm that takes an input  security: $1^{\scriptscriptstyle\lambda}$ and time:  $\Delta$ parameters. It outputs a public-private key pairs: $(pk,sk)$. 
+
+\item[$\bullet$]$\mathtt{GenPuz}(s, pk, sk)\rightarrow \ddot{o}$: a probabilistic algorithm that takes an input a solution: $s$ and the public-private key pairs: $(pk,sk)$. It  outputs a puzzle: $\ddot{o}$.
+
+\item[$\bullet$]$\mathtt{SolvPuz}(pk,\ddot{o})\rightarrow s$:  a deterministic algorithm that takes as input  the public key: $pk$ and  puzzle: $\ddot{o}$. It outputs a solution: $s$. 
+\end{itemize}
+\item \textbf{Completeness}: always  $\mathtt{SolvPuz}(pk,\mathtt{GenPuz}(s,pk,sk))=s$
+
+
+\item \textbf{Efficiency}: the run-time of algorithm $\mathtt{SolvPuz}(pk,\ddot{o})$ is bounded by  $poly(\Delta,\lambda)$, where $poly(.)$ is a  polynomial.
+\end{itemize}
+\end{definition}
+
+
+Informally, a time-lock puzzle's security requires that the puzzle solution  remain hidden from all adversaries running in parallel within the time period, $\Delta$.   It is essential that no adversary can find a solution   in  time $\delta(\Delta)<\Delta$, utilising  $\pi(\Delta)$  processors running in parallel and after a potentially large amount of pre-computation. In other words, it is critical to bound the adversary's allowed parallelism. So, such factors are explicitly incorporated  into the puzzle's definitions \cite{BonehBBF18,MalavoltaT19,garay2019}. 
+
+\begin{definition}[Time-lock Puzzle Security] A time-lock puzzle is secure if for all $\lambda$ and $\Delta$, all probabilistic polynomial time adversaries $\mathcal{A}=(\mathcal{A}_{\scriptscriptstyle 1},\mathcal{A}_{\scriptscriptstyle 2})$ where $\mathcal{A}_{\scriptscriptstyle 1}$ runs in total time $O(poly(\Delta,\lambda))$ and $\mathcal{A}_{\scriptscriptstyle 2}$ runs in  time $\delta(\Delta)<\Delta$ using at most $\pi(\Delta)$ parallel processors, there exists a negligible function $\mu(.)$, such that: 
+
+%\footnotesize{
+
+$$ Pr\left[
+  \begin{array}{l}
+\mathcal{A}_{\scriptscriptstyle 2}(pk, \ddot{o},\text{state})  \rightarrow b
+\end{array} \middle |
+    \begin{array}{l}
+\mathtt{Setup}(1^{\scriptscriptstyle\lambda},\Delta)\rightarrow (pk,sk)\\
+\mathcal{A}_{\scriptscriptstyle 1}(1^{\scriptscriptstyle\lambda},pk, \Delta)\rightarrow (s_{\scriptscriptstyle 0},s_{\scriptscriptstyle 1},\text{state})\\
+b\stackrel{\scriptscriptstyle\$}\leftarrow \{0,1\}\\
+\mathtt {GenPuz}(s_{\scriptscriptstyle b}, pk, sk)\rightarrow \ddot{o}\\
+\end{array}    \right]\leq \frac{1}{2}+\mu(\lambda)$$
+\end{definition}
+
+
+
+
+
+An  RSA-based time-lock puzzle construction that realises the above definitions was proposed in  \cite{Rivest:1996:TPT:888615}. The construction is as follows. 
+
+
+
+\
+
+\begin{enumerate}%[leftmargin=.43cm]
+
+\item \textbf{Setup}: $\mathtt{TLP.Setup}(1^{\scriptscriptstyle\lambda}, \Delta)$
+\begin{enumerate}
+
+
+\item Compute $N=q_{\scriptscriptstyle 1}q_{\scriptscriptstyle 2}$, where $q_{\scriptscriptstyle i}$  is a large randomly chosen prime number. Then   compute Euler's totient function of $N$, as: $\phi(N)=(q_{\scriptscriptstyle 1}-1)(q_{\scriptscriptstyle 2}-1)$ 
+\item  Set  $T=S\Delta$ as the total number of squaring needed to decrypt an encrypted message $m$, where $\Delta$ is the period (in seconds) within  which the message should remain private and $S$ is the maximum  number of squaring modulo $N$ per second that can be performed by a solver. 
+\item  Choose a random key: $k$ for a semantically secure symmetric key encryption   that has  three algorithms: $(\mathtt{GenKey}, $ $\mathtt{Enc}, $ $\mathtt{Dec}$) 
+\item Pick a uniformly random value $r$ from  $\mathbb{Z}^{\scriptscriptstyle *}_{\scriptscriptstyle N} $
+\item Compute $a=2^{\scriptscriptstyle T}\bmod \phi(N)$
+\item Set $pk=(N,T,r)$ as  public key and set $sk=(q_{\scriptscriptstyle 1},q_{\scriptscriptstyle 2},a,k)$ as secret key.
+\end{enumerate}
+
+
+
+\item\label{Generate-Puzzle-} \textbf{Generate Puzzle}: $\mathtt{TLP.GenPuZ}(m,pk,sk)$ %$\mathcal{ENC}^{\scriptscriptstyle pk}_{\scriptscriptstyle sk,T}()$ 
+
+\begin{enumerate}
+\item\label{R-TLP::enc-message}  Encrypt the message using the symmetric key encryption: $o_{\scriptscriptstyle 1}= \mathtt{Enc}(k,m)$
+\item Encrypt the key: $k$, as: $o_{\scriptscriptstyle 2}= k+r^{\scriptscriptstyle a}\bmod N$
+%\end{enumerate*}
+\item Sets: $\ddot{o}=(o_{\scriptscriptstyle 1},o_{\scriptscriptstyle 2})$ as ciphertext or puzzle. Next, output $\ddot{o}$
+\end{enumerate}
+
+
+
+
+\item\textbf{Solve Puzzle}: $\mathtt{TLP.SolvPuz}(pk,\ddot{o})$ 
+
+\begin{enumerate}
+\item\label{R-TLP::find-b} Find $b$, where $b=r^{\scriptscriptstyle 2^{\scriptscriptstyle T}}\bmod N$, by using $T$ number of squaring $r$ modulo $N$
+\item\label{R-TLP::dec-key} Decrypt the key's ciphertext: $k=o_{\scriptscriptstyle 2}-b\bmod N$
+\item\label{R-TLP::dec-message} Decrypt the message's ciphertext: $m=\mathtt{Dec}(k,o_{\scriptscriptstyle 1})$.  Output $m$
+\end{enumerate}
+\end{enumerate}
+
+Informally, the  time-lock puzzle's security relies on the hardness of factoring problem,     the security of the symmetric key encryption, and sequential squaring assumption. We refer readers to Appendix \ref{R-TLP-proof} for more discussion on the construction and its security.
+
+
+
+\input{notation-Table.tex}
+
+%\input{notation-Table.tex}
+

@@ -1,0 +1,62 @@
+% !TEX root =main.tex
+
+\vspace{-4mm}
+ \begin{table}[htb]
+
+
+%\begin{boxedminipage}{\columnwidth}
+%\begin{center}
+\caption{ \small VDF's Cost Comparison} \label{table::VDF-comparison} 
+\begin{footnotesize}
+\begin{center}
+\renewcommand{\arraystretch}{.87}
+%\begin{minipage}{1\linewidth}
+%\resizebox{\columnwidth}{!}{
+
+
+%\scalebox{0.9}{
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+   \hline
+\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}&\multicolumn{3}{c|}{\scriptsize\cellcolor[gray]{.9} \underline{\ \ \ \ \ \ \   Computation Cost  \ \ \ \ \ \ \ }}& \cellcolor[gray]{0.9}\\
+
+ %\cline{4-6}
+
+\cellcolor[gray]{0.9}\multirow{-2}{*} {\scriptsize Protocols}&\cellcolor[gray]{0.9}\multirow{-2}{*}{\scriptsize Model}&\cellcolor[gray]{0.9}\multirow{-2}{*} {\scriptsize Operation}&\cellcolor[gray]{0.9}\scriptsize$\mathtt{Setup}$&\cellcolor[gray]{0.9}\scriptsize$\mathtt{Prove}$&\cellcolor[gray]{0.9}\scriptsize$\mathtt{Verify}$&\cellcolor[gray]{0.9}\multirow{-2}{*}{\scriptsize Proof size (bit)}\\
+\hline
+  %-----CR-TLP VDF
+\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}\scriptsize Exp.&\scriptsize$3z+1$&\scriptsize$Tz$ &\scriptsize$2z$& \multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize $1524z$}}  \\
+     \cline{3-6}  
+     
+ \cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}\multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize Standard}}&\cellcolor[gray]{0.9}\scriptsize Mul.&\scriptsize$z$&\scriptsize$-$ &\scriptsize$z$&\\
+     \cline{2-7}  
+\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}\scriptsize Exp.  &\scriptsize$z+1$&\scriptsize$Tz$&\scriptsize$-$&\multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize $628z$}}  \\
+     \cline{3-6}  
+\cellcolor[gray]{0.9}\multirow{-4}{*}{\rotatebox[origin=c]{0}{\scriptsize C-TLP}}&\cellcolor[gray]{0.9}\multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize R.O.}}&\cellcolor[gray]{0.9}\scriptsize Mul.&\scriptsize$-$&\scriptsize$-$&\scriptsize$-$&\\
+     \cline{2-7}    
+     \hline 
+     
+          \hline 
+          %-----Boneh
+\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}\scriptsize Exp.&\scriptsize$2^{\scriptscriptstyle 30}$&\scriptsize$Tz$&\scriptsize$z$&\multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize $2048z$}}\\
+ \cline{3-6}  
+\cellcolor[gray]{0.9}\multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{BonehBBF18}}}&\cellcolor[gray]{0.9}\multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize R.O.}} &\cellcolor[gray]{0.9}\scriptsize Mul.&\scriptsize$-$&\scriptsize$2z\cdot 2^{\scriptscriptstyle 30}$&\scriptsize$2z\cdot 2^{\scriptscriptstyle 30}$& \\
+     \cline{2-7} 
+      \hline
+      
+       \hline
+       %-----Wesolowski
+\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}&\cellcolor[gray]{0.9}\scriptsize Exp.&$-$&\scriptsize$3Tz$&\scriptsize$3 z$&\multirow{2}{*}{\rotatebox[origin=c]{0}{\scriptsize $4096z$}}\\
+\cline{3-6}  
+\cellcolor[gray]{0.9}\multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize   \cite{Wesolowski19}}}&\cellcolor[gray]{0.9}\multirow{-2}{*}{\rotatebox[origin=c]{0}{\scriptsize R.O.}}&\cellcolor[gray]{0.9}\scriptsize Mul.&\scriptsize$-$&\scriptsize$Tz$&\scriptsize$-$&  \\
+     \cline{2-6} 
+
+ \hline
+\end{tabular}
+%}
+%}
+%\end{boxedminipage}
+\end{center}
+\end{footnotesize}
+\end{table}
+\vspace{-5mm}

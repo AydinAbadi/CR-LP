@@ -1,0 +1,31 @@
+% !TEX root =main.tex
+
+
+\section{Further Remarks on  C-TLP Protocol}\label{discussion-C-TLP}
+
+In this section, we provide some remarks on  C-TLP scheme presented in Section \ref{SO-PoR-Protocol}. 
+
+\begin{remark} Recall, to make each  puzzle instance, a distinct random generator: $r_{\scriptscriptstyle j}$, is used. This is the reason, in the C-TLP protocol, before a puzzle  is  generated   in step \ref{call-RTLP-GenPuz},  a new public key is set in step \ref{set-pk-in-loop}.  Also, at the beginning of the protocol only $r_{\scriptscriptstyle 1}$ is public and the rest of the generators are kept secret. They are found and used sequentially after their related puzzle is solved. 
+\end{remark}
+
+
+\begin{remark} The commitments opening, including the commitment random values, are not known to other verifiers (than the puzzle generator) at the beginning of the protocol. At this point,  only the committed values are public. Once a solver solves each puzzle,  it  extracts one of the commitments' opening and sends it to a public verifier who can check if the opening matches the commitment.  
+\end{remark}
+
+\begin{remark}
+ In  C-TLP, we use the folklore hash-based commitment scheme, in the random oracle model, only to achieve more computation improvement than that can be achieved in the standard model. But C-TLP can utilise any efficient non-interactive commitment scheme in the \emph{standard model} as well, e.g. Pedersen Commitment.
+\end{remark}
+
+
+\begin{remark}
+The efficiency of  C-TLP scheme stems from three crucial factors: (a) removing computation overlaps when solving different puzzles: even though solving $j\text{\small{-th}}$ puzzle, where $j>1$, requires $jT$ squaring, $(j-1) T$ of the squaring is used to solve previous puzzles that leads to $\frac{z+1}{2}$ times computation cost reduction at the server-side,  (b)  supporting reusable single  public parameter: $a=2^{\scriptscriptstyle T}$, generated only once that costs $O(1)$, as opposed to the RSA-based TLP whose cost is linear: $O(z)$, and (c) supporting efficient verification: due to the way each message is encoded (i.e. embedding the opening in a solution). 
+\end{remark}
+
+\begin{remark}
+C-TLP also can efficiently  be used in a multi-server setting,  where there are $z$ servers: $\{S_{\scriptscriptstyle 1},...,S_{\scriptscriptstyle z}\}$,  each $S_{\scriptscriptstyle j}$ needs to solve puzzle $\ddot{o}_{\scriptscriptstyle j}$ at time $f_{\scriptscriptstyle j}$ and passes on the solution to the next server $S_{\scriptscriptstyle j+1}$ to solve the next puzzle by time $f_{\scriptscriptstyle j+1}>f_{\scriptscriptstyle j}$. In this setting,  due to the scalability property of C-TLP (and unlike using the existing time-lock puzzles naively), other servers do not need to start solving the puzzle   as soon as the client releases puzzles' public parameters. Instead, they can wait until the previous solution is issued that saves them a significant cost. Furthermore, a  server can first  verify the correctness  of the solution found by the previous server (due to the public verifiability of C-TLP),  if accepted then   it starts finding the next solution. 
+\end{remark}
+
+
+\begin{remark}
+In the following, we outline an  approach that looks an option to construct an efficient C-TLP; however, as we will show it would not be secure. In particular,  one uses the TLP to generate $z$ public and secret key pairs. Then, it uses the TLP to compute $z\text{\small{-th}}$ puzzle as $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle z},pk_{\scriptscriptstyle z},sk_{\scriptscriptstyle z})\rightarrow \ddot{o}_{\scriptscriptstyle z}$.  Then, it embeds $\ddot{o}_{\scriptscriptstyle z}$ into $(z-1)\text{\small{-th}}$ one, i.e. $\mathtt{TLP.GenPuZ}(m_{\scriptscriptstyle z-1}||\ddot{o}_{\scriptscriptstyle z},pk_{\scriptscriptstyle z-1},sk_{\scriptscriptstyle z-1})\rightarrow \ddot{o}_{\scriptscriptstyle z-1}$. This process goes on until $\ddot{o}_{\scriptscriptstyle 1}$  is created. It sends the combined puzzles and public key (including all random generators) to the server; with the hope that puzzles can be solved sequentially and the time gap between finding two solutions will be $\Delta$.  This approach is not secure, because as soon as the server accesses $\ddot{o}_{\scriptscriptstyle 1}$ and public parameters, it can in parallel perform $T$ squaring on every generator, i.e. $r^{\scriptscriptstyle 2^{\scriptscriptstyle T}}_{\scriptscriptstyle i}$, for all $i, 1\leq i\leq z$. In this case, as soon as $\ddot{o}_{\scriptscriptstyle 1}$ is solved and  $\ddot{o}_{\scriptscriptstyle 2}$  is extracted, it has enough information to  immediately solve $\ddot{o}_{\scriptscriptstyle 2}$ and accordingly the rest of the puzzles without doing any further exponentiation. 
+\end{remark}

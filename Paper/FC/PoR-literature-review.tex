@@ -1,0 +1,26 @@
+% !TEX root =main.tex
+
+%\subsection{Proofs of Retrievability}\label{related-work-PoR-short}
+
+\noindent\textbf{Outsourced Proofs of Retrievability}
+Proofs of retrievability (PoR) schemes, introduced in \cite{DBLP:conf/ccs/JuelsK07},  guarantee to a client that  its   data on a cloud server is fully accessible. Ever since  a variety of PoR's has been proposed.  Recently,  \cite{armknecht2014outsourced,xu2016lightweight} present  \emph{outsourced} PoR protocols that allow  clients to outsource the   verification to a potentially malicious third-party auditor. The scheme in \cite{armknecht2014outsourced}   has the fastest prove and verification algorithms. It uses message authentication code (MAC) based tags, zero-knowledge proofs and error-correcting codes. However, it  has  several shortcomings, i.e. it offers no real-time detection,  provides no efficient way for fair payments and  has high costs of setup and auditor onboarding.   Xu \textit{et al.} in \cite{xu2016lightweight} propose a publicly verifiable outsourced PoR to improve the previous scheme's setup cost. It uses   BLS signatures-like tags, polynomial arithmetics and error-correcting code.  In this protocol, an auditor is assumed to be fully trusted during each verification whose overhead is higher  than \cite{armknecht2014outsourced}. Very recently in \cite{Storage-Time} two protocols are proposed; namely, ``basic PoSt'' and ``compact PoSt''. They ensure that a client's data remains available on a   server for a   period, without the client's involvement  in that period.  The basic PoSt  uses a Merkle tree-based PoR and VDF. It has a high communication cost. Since it  requires a verifier to validate VDF's outputs, it imposes a significant computation cost too. The compact PoSt has a lower communication cost than the basic one, as it let the server combine PoR proofs. The protocol is mainly based on a trapdoor delay function (TDF). Note,  all  outsourced PoR schemes \cite{armknecht2014outsourced,xu2016lightweight,Storage-Time}  assume the client behaves honestly towards the server. Otherwise, a malicious client can generate the tags in a way that  makes an honest server generate invalid proofs. 
+
+%Although in \cite{armknecht2014outsourced} a client is considered to be malicious from an auditor point of view,  the protocol assumes the client behaves honestly towards the server. %Similarly, in this paper, we assume the client is honest. 
+
+%In these protocols,  a client uploads its data  to a server once, then  the server generates proofs of storage (e.g. PoR) periodically, collects them and sends the collection after  time $T$ to a verifier  who can check the proofs. 
+
+\noindent\textbf{Blockchain-based PoR.} There exist distributed PoR schemes that let a client  distribute its file among different (tailored) blockchain nodes,  e.g. Permacoin \cite{MillerPermacoin}, Filecoin  \cite{Filecoin}, and KopperCoin \cite{KoppBK16}. However,  they have either a large proof size (e.g. in \cite{MillerPermacoin,Filecoin})  logarithmic with the  file size when a  Merkle tree is used, or high verification overhead (e.g. in \cite{KoppBK16}) due to the use of BLS signatures. There are protocols that use blockchain to verify the retrievability of off-chain data \cite{RennerMK18,HaoXWJW18,ZhangDLZ18,Audita18,blockchain-data-audit-18,sia14}. Nevertheless, they either impose a high communication/computation cost \cite{RennerMK18,HaoXWJW18,Audita18,blockchain-data-audit-18,sia14}, or  clients have to be online for each verification  \cite{ZhangDLZ18}.  Campanelli \textit{et al.}  \cite{CampanelliGGN17}  present a fair exchange mechanism over a blockchain that ensures the server gets paid if it provides an accepting PoR proof. But, this scheme assumes either the client can   perform the verification itself or a third-party, acting on the client's behalf,  carries out the verification honestly. 
+
+\vspace{-3mm}
+%BonehBBF18,Wesolowski19
+
+
+
+
+%\vspace{-2mm}
+
+
+
+
+
+
